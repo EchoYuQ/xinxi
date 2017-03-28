@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="#fd5a01">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="压力检测"
+            android:textColor="#ffffff"
+            android:textSize="16dp" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/hint_animation"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <ImageView android:id="@+id/iv_hintanimation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/animation1"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/kk" />
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="2"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<com.lzy.heartrate.ui.RoundImageView-->
+            <!--android:id="@+id/id_icon_start"-->
+            <!--android:layout_width="180dp"-->
+            <!--android:layout_height="180dp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:src="@drawable/kaishiceliang"-->
+            <!--/>-->
+
+    <!--</RelativeLayout>-->
+
+    <com.lzy.heartset.ui.RippleImageView
+        android:id="@+id/rippleImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="#7dcc6e"
+        app:show_spacing_time="800"
+        app:imageViewWidth="35dp"
+        app:imageViewHeigth="35dp">
+
+    </com.lzy.heartset.ui.RippleImageView>
+
+
+</LinearLayout>

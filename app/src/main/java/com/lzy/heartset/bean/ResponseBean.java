@@ -1,0 +1,45 @@
+package com.lzy.heartset.bean;
+
+import com.google.gson.JsonObject;
+
+/**
+ * Created by yuqing on 2017/3/20.
+ */
+public class ResponseBean {
+    private int code=-1;
+    private String msg;
+    private Object body;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public Object getBody() {
+        return body;
+    }
+
+    public void setBody(Object body) {
+        this.body = body;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseBean{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", body=" + body +
+                '}';
+    }
+}

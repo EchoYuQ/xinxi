@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="diet_array">
+        <item>清淡</item>
+        <item>均衡</item>
+        <item>营养</item>
+        <item>油腻</item>
+    </string-array>
+
+    <string-array name="weather_array">
+        <item>晴天</item>
+        <item>阴天</item>
+        <item>雾霾</item>
+        <item>小雨</item>
+        <item>暴雨</item>
+        <item>小雪</item>
+        <item>大雪</item>
+        <item>沙尘暴</item>
+        <item>冰雹</item>
+    </string-array>
+
+</resources>

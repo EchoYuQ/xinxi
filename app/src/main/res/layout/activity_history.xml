@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/rg_choose"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+
+        <RadioButton
+            android:id="@+id/rb_day"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_radiobutton"
+            android:button="@null"
+            android:gravity="center"
+            android:text="日"
+            android:textColor="@drawable/color_radiobutton"
+            android:textSize="14sp" />
+
+        <RadioButton
+            android:id="@+id/rb_week"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_radiobutton"
+            android:button="@null"
+            android:gravity="center"
+            android:text="周"
+            android:textColor="@drawable/color_radiobutton"
+
+            android:textSize="14sp" />
+
+        <RadioButton
+            android:id="@+id/rb_month"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_radiobutton"
+            android:button="@null"
+            android:gravity="center"
+            android:text="月"
+            android:textColor="@drawable/color_radiobutton"
+
+            android:textSize="14sp" />
+
+        <RadioButton
+            android:id="@+id/rb_year"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_radiobutton"
+            android:button="@null"
+            android:gravity="center"
+            android:text="年"
+            android:textColor="@drawable/color_radiobutton"
+
+            android:textSize="14sp" />
+    </RadioGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/fl_history">
+
+    </FrameLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lv_history">
+
+    </ListView>
+</LinearLayout>
