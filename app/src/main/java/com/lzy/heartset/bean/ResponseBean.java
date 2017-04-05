@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 public class ResponseBean {
     private int code=-1;
     private String msg;
-    private Object body;
+    private String body;
 
     public int getCode() {
         return code;
@@ -26,11 +26,11 @@ public class ResponseBean {
         this.msg = msg;
     }
 
-    public Object getBody() {
+    public String getBody() {
         return body;
     }
 
-    public void setBody(Object body) {
+    public void setBody(String body) {
         this.body = body;
     }
 

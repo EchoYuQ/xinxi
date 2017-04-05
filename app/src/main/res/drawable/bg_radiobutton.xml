@@ -8,7 +8,7 @@
     <item              
           android:state_enabled="true"     
           android:state_checked="false"
-          android:drawable="@drawable/btn_white"
+          android:drawable="@drawable/btn_history_tab"
            />
 
 </selector>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -48,6 +50,8 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -65,7 +69,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author liuyazhuang
  */
 public class MeasureActivity extends Activity {
-    private static final String URL_MEASURE = "http://10.108.224.77:8080/detect3/TransServlet";
+    private static final String URL_MEASURE = GlobalData.URL_HEAD+":8080/detect3/TransServlet";
     //曲线
     private Timer timer;
     //Timer任务，与Timer配套使用
@@ -94,7 +98,7 @@ public class MeasureActivity extends Activity {
     private double minY;
     private int t = 0;
 
-    private MeasureData mMeasureData=new MeasureData();
+    private MeasureData mMeasureData = new MeasureData();
 
     // 用于计算实时心率的数据
     List<Double> mRealTimeDatas = new ArrayList<Double>();
@@ -148,7 +152,7 @@ public class MeasureActivity extends Activity {
     private int mRealTimeHeartRate = 0;
     private int mHeartRate;
 
-    private boolean mIsHeartRateCanSet=true;
+    private boolean mIsHeartRateCanSet = true;
 
 
     /**
@@ -189,7 +193,7 @@ public class MeasureActivity extends Activity {
         m_HeartDrawable.addDrawable(getResources().getDrawable(R.drawable.ic_heart_small), false);
 
         m_ProgressWheel = (ProgressWheel) findViewById(R.id.pw_heartrate);
-        m_ProgressWheel.setMax(2*AXISXMAX-10);
+        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
     }
 
 
@@ -210,7 +214,7 @@ public class MeasureActivity extends Activity {
 
         List<Double> realtime_data_smoothed_list = new ArrayList<Double>();
         // 去头去尾
-        for (int i = 5; i < realtime_data_smoothed.length-5; i++) {
+        for (int i = 5; i < realtime_data_smoothed.length - 5; i++) {
             realtime_data_smoothed_list.add(realtime_data_smoothed[i]);
         }
         System.out.println("实时心率去噪数据");
@@ -269,7 +273,7 @@ public class MeasureActivity extends Activity {
         mDataset.addSeries(series);
 
         //以下都是曲线的样式和属性等等的设置，renderer相当于一个用来给图表做渲染的句柄
-        int color = Color.RED;
+        int color = getResources().getColor(R.color.line_green);
         PointStyle style = PointStyle.CIRCLE;
         renderer = buildRenderer(color, style, true);
 
@@ -429,7 +433,7 @@ public class MeasureActivity extends Activity {
                     m_HeartDrawable.startTwinkle();
                     mIsHeartAnimPlaying = true;
                 }
-                m_ProgressWheel.setProgress(count-10);
+                m_ProgressWheel.setProgress(count - 10);
 
                 // 测试实时心率计算
                 mRealTimeDatas.add(brightvalue);
@@ -443,15 +447,13 @@ public class MeasureActivity extends Activity {
                     });
                     thread.start();
                 }
-                if (count==10)
-                {
-                    mIsHeartRateCanSet=true;
-                    mRealTimeHeartRate=mHeartRate;
+                if (count == 10) {
+                    mIsHeartRateCanSet = true;
+                    mRealTimeHeartRate = mHeartRate;
                 }
-                if (mIsHeartRateCanSet)
-                {
+                if (mIsHeartRateCanSet) {
                     m_TvLabel.setText(mRealTimeHeartRate + "");
-                    Log.i("m_TvLabel","设了一次实时心率值");
+                    Log.i("m_TvLabel", "设了一次实时心率值");
 
                 }
 
@@ -463,15 +465,15 @@ public class MeasureActivity extends Activity {
 
                 // 如果有效数据采集到300个，就跳转到保存数据的界面
 //                if (count >= 100) {
-                if (count >= 2 * AXISXMAX) {
+                if (count == 2 * AXISXMAX) {
 
 
                     UserDataBean userDataBean = new UserDataBean();
                     userDataBean.setDatas(mDatas);
                     handler.removeCallbacksAndMessages(null);
-                    handler= null;
+                    handler = null;
                     timer.cancel();
-                    mIsHeartRateCanSet=false;
+                    mIsHeartRateCanSet = false;
 
                     for (int i = 0; i < 10; i++) {
                         int index = mRedDatas.size() - 1;
@@ -524,7 +526,7 @@ public class MeasureActivity extends Activity {
                     mHeartRate = CalculateHeartRate.calHeartRate(peaksList, INTERVAL);
                     userDataBean.setHeartrate(mHeartRate);
                     Log.i("heart rate", mHeartRate + "");
-                    m_TvLabel.setText(mHeartRate+"");
+                    m_TvLabel.setText(mHeartRate + "");
                     Toast.makeText(MeasureActivity.this, "心率为" + mHeartRate, Toast.LENGTH_LONG).show();
 
 
@@ -537,20 +539,19 @@ public class MeasureActivity extends Activity {
 //                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
                     // 上传给server端的数据
                     mMeasureData.setHeart_rate(mHeartRate);
-                    mMeasureData.setRr_interval(CalculateHeartRate.calRRInteval(peaksList,INTERVAL));
+                    mMeasureData.setRr_interval(CalculateHeartRate.calRRInteval(peaksList, INTERVAL));
                     // List<Double>转成List<Float> 并保留4位小数
-                    DecimalFormat df=new DecimalFormat("#0.0000");
-                    List<Float> float_list=new ArrayList<>();
-                    for (int i=0;i<data_smoothed_list.size();i++)
-                    {
-                        String str=df.format(data_smoothed_list.get(i));
-                        float num=Float.valueOf(str);
+                    DecimalFormat df = new DecimalFormat("#0.0000");
+                    List<Float> float_list = new ArrayList<>();
+                    for (int i = 0; i < data_smoothed_list.size(); i++) {
+                        String str = df.format(data_smoothed_list.get(i));
+                        float num = Float.valueOf(str);
                         float_list.add(num);
                     }
                     mMeasureData.setData(float_list);
 
                     // 1. 用于用户使用
-//                    postToServer(MeasureActivity.this);
+                    postToServer(MeasureActivity.this);
 //                    Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
 //                    Bundle bundle = new Bundle();
 //                    bundle.putSerializable("userdatabean", userDataBean);
@@ -558,11 +559,11 @@ public class MeasureActivity extends Activity {
 //                    startActivity(intent);
 
                     // 2. 用于收集数据使用
-                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("measure_data", mMeasureData);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+//                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("measure_data", mMeasureData);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
 
                     finish();
 
@@ -619,7 +620,6 @@ public class MeasureActivity extends Activity {
             m_ProgressWheel.setProgress(0);
             series.clear();
         }
-
 
 
     }
@@ -715,22 +715,10 @@ public class MeasureActivity extends Activity {
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             try {
-
-                camera = Camera.open();
-                try {
-                    camera.setPreviewDisplay(previewHolder);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                // 设预览回调
+                camera.setPreviewDisplay(previewHolder);
                 camera.setPreviewCallback(previewCallback);
-//
-//                camera.setPreviewDisplay(previewHolder);
+                camera.setDisplayOrientation(90);
 
-                //启动摄像头预览
-                camera.startPreview();
             } catch (Throwable t) {
                 Log.e("PreviewDemo", "Exception in setPreviewDisplay()", t);
             }
@@ -740,19 +728,16 @@ public class MeasureActivity extends Activity {
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
+
             Camera.Parameters parameters = camera.getParameters();
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            // 旋转90度
-            camera.setDisplayOrientation(90);
-            parameters.setRotation(90);
+            Camera.Size size = getSmallestPreviewSize(parameters);
+            if (size != null) {
+                parameters.setPreviewSize(size.width, size.height);
+                Log.d("camera size", "Using width=" + size.width + " height=" + size.height);
+            }
             camera.setParameters(parameters);
-//            Camera.Size size = getSmallestPreviewSize(width, height, parameters);
-////            size.width = 480;
-////            size.height = 360;
-//            if (size != null) {
-//                parameters.setPreviewSize(size.width, size.height);
-//                //				Log.d(TAG, "Using width=" + size.width + " height="	+ size.height);
-//            }
+            camera.startPreview();
 
         }
 
@@ -767,39 +752,35 @@ public class MeasureActivity extends Activity {
     /**
      * 获取相机最小的预览尺寸
      *
-     * @param width
-     * @param height
      * @param parameters
      * @return
      */
-    private static Camera.Size getSmallestPreviewSize(int width, int height,
-                                                      Camera.Parameters parameters) {
+    private static Camera.Size getSmallestPreviewSize(Camera.Parameters parameters) {
         Camera.Size result = null;
         List<Camera.Size> cameralist = parameters.getSupportedPreviewSizes();
 
         for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
-//            Log.i("camera size", size.width + ":" + size.height);
-            if (size.width <= width && size.height <= height) {
-                if (result == null) {
+            Log.i("camera size", size.width + ":" + size.height);
+
+            if (result == null) {
+                result = size;
+            } else {
+                int resultArea = result.width * result.height;
+                int newArea = size.width * size.height;
+                if (newArea < resultArea)
                     result = size;
-                } else {
-                    int resultArea = result.width * result.height;
-                    int newArea = size.width * size.height;
-                    if (newArea < resultArea)
-                        result = size;
-                }
             }
+
         }
 
         return result;
     }
 
-    private void postToServer(final Context context)
-    {
+    private void postToServer(final Context context) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         //将JSONObject作为，将上一步得到的JSONObject对象作为参数传入
-        StringRequest stringRequest = new StringRequest (Request.Method.POST, URL_MEASURE,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_MEASURE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -814,8 +795,28 @@ public class MeasureActivity extends Activity {
 
                         if (responseBean.getCode() == 0) {
 
-                            // 回到我的界面
+                            String jsonString = responseBean.getBody();
+                            int pressure = 0;
+                            String ad = "";
+
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonString);
+                                if (jsonObject.has("pressure"))
+                                    pressure = (int) (jsonObject.getDouble("pressure"));
+                                if (jsonObject.has("advice"))
+                                    ad = jsonObject.getString("advice");
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                             Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("pressure", pressure);
+                            bundle.putString("ad", ad);
+                            bundle.putInt("heart_rate", mHeartRate);
+                            intent.putExtras(bundle);
                             startActivity(intent);
                         }
 
@@ -833,16 +834,18 @@ public class MeasureActivity extends Activity {
                 Map<String, String> map = new HashMap<String, String>();
 
 
-                Gson gson=new Gson();
-                String measuredata_str=gson.toJson(mMeasureData);
+                Gson gson = new Gson();
+                String measuredata_str = gson.toJson(mMeasureData);
                 map.put("userid", GlobalData.getUserid());
                 map.put("date", TimeUtil.getCurrentDate());
                 map.put("time", TimeUtil.getCurrentTime());
-                map.put("all_data",measuredata_str);
-                Log.i("Measure Api",map.toString());
+                map.put("all_data", measuredata_str);
+                Log.i("Measure Api", map.toString());
                 return map;
             }
         };
+//        request.setRetryPolicy(new DefaultRetryPolicy(50000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50 * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // 将请求添加到请求队列
         requestQueue.add(stringRequest);
     }

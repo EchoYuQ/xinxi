@@ -21,6 +21,7 @@ import com.lzy.heartset.R;
 import com.lzy.heartset.bean.RegisterInfo;
 import com.lzy.heartset.bean.ResponseBean;
 import com.lzy.heartset.bean.VercodeInfo;
+import com.lzy.heartset.utils.GlobalData;
 import com.lzy.heartset.utils.NetworkUtil;
 import com.lzy.heartset.utils.NetworkUtil2;
 import com.lzy.heartset.utils.TimeCount;
@@ -44,8 +45,8 @@ public class RegisterActivity extends Activity {
     private TimeCount mTimeCount;
 
 
-    private static final String URL_REGISTER = "http://10.108.224.77:8080/detect3/RegServlet";
-    private static final String URL_REGISTER_VERCODE = "http://10.108.224.77:8080/detect3/GetVercodeServlet";
+    private static final String URL_REGISTER = GlobalData.URL_HEAD+":8080/detect3/RegServlet";
+    private static final String URL_REGISTER_VERCODE = GlobalData.URL_HEAD+":8080/detect3/GetVercodeServlet";
 
     private String mTel;
 
@@ -153,10 +154,9 @@ public class RegisterActivity extends Activity {
                             case 0:
                                 Toast.makeText(RegisterActivity.this, "注册成功",
                                         Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(RegisterActivity.this, RegisterActivity.class);
+                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 finish();
-
                                 break;
                             case 20000:
                                 Toast.makeText(RegisterActivity.this, "用户已存在",
@@ -192,7 +192,7 @@ public class RegisterActivity extends Activity {
                 map.put("tel", str_phone);
                 map.put("password", str_pwd);
                 map.put("vercode", str_vercode);
-                Log.i("REGISTER params",map.toString());
+                Log.i("REGISTER params", map.toString());
                 return map;
             }
         };

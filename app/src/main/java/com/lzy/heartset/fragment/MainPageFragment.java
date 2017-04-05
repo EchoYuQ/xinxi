@@ -49,9 +49,6 @@ public class MainPageFragment extends Fragment implements OnClickListener {
     // 广告
     private ViewPager viewPager;
 
-    // More
-    private ImageView mIvBrandMore;
-    private ImageView mIvPartsMore;
 
 
     // 搜索
@@ -122,6 +119,14 @@ public class MainPageFragment extends Fragment implements OnClickListener {
 
     // 初始化控件
     private void initView() {
+//        mFindMoreNews = (TextView) view.findViewById(R.id.tv_morenews);
+//        mFindMoreNews.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                alphaIndicator.setPagerNum(3);
+//            }
+//        });
+
         mFindMoreNews = (TextView) view.findViewById(R.id.tv_morenews);
         mFindMoreNews.setOnClickListener(new OnClickListener() {
             @Override
@@ -142,25 +147,25 @@ public class MainPageFragment extends Fragment implements OnClickListener {
         View v0 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l0 = (LinearLayout) v0.findViewById(R.id.advertise_item);
-        l0.setBackgroundResource(R.drawable.main_page1);
+        l0.setBackgroundResource(R.drawable.ad1);
         ar.add(l0);
 
         View v1 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l1 = (LinearLayout) v1.findViewById(R.id.advertise_item);
-        l1.setBackgroundResource(R.drawable.main_page2);
+        l1.setBackgroundResource(R.drawable.ad1);
         ar.add(l1);
 
         View v2 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l2 = (LinearLayout) v2.findViewById(R.id.advertise_item);
-        l2.setBackgroundResource(R.drawable.main_page3);
+        l2.setBackgroundResource(R.drawable.ad1);
         ar.add(l2);
 
         View v3 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l3 = (LinearLayout) v3.findViewById(R.id.advertise_item);
-        l3.setBackgroundResource(R.drawable.main_page4);
+        l3.setBackgroundResource(R.drawable.ad1);
         ar.add(l3);
 
         adapter = new GuidePageAdapter(getActivity(), ar);

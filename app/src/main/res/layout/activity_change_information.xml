@@ -12,12 +12,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="?attr/colorPrimary"
+        android:background="@color/main"
         >
         <ImageView
             android:id="@+id/id_iv_back"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
             android:background="@drawable/ic_back"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"/>
@@ -126,8 +126,8 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginRight="5dp"
@@ -163,8 +163,8 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginRight="5dp"

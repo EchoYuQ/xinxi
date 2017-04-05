@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.lzy.heartset.R;
 import com.lzy.heartset.bean.ResponseBean;
+import com.lzy.heartset.utils.GlobalData;
 import com.lzy.heartset.utils.NetworkUtil;
 import com.lzy.heartset.utils.TimeCount;
 
@@ -40,8 +41,8 @@ public class ResetPwdActivity extends Activity {
 
 
 
-	private static final String URL_RESETPWD = "http://10.108.224.77:8080/detect3/FindPasswordServlet";
-	private static final String URL_RESETPWD_VERCODE = "http://10.108.224.77:8080/detect3/VercodeForFindServlet";
+	private static final String URL_RESETPWD = GlobalData.URL_HEAD+":8080/detect3/FindPasswordServlet";
+	private static final String URL_RESETPWD_VERCODE = GlobalData.URL_HEAD+":8080/detect3/VercodeForFindServlet";
 	private TimeCount mTimeCount;
 
 	@Override
@@ -130,9 +131,9 @@ public class ResetPwdActivity extends Activity {
 						// 判断解析后的code状态码
 						switch (responseBean.getCode()) {
 							case 0:
-								Toast.makeText(ResetPwdActivity.this, "注册成功",
+								Toast.makeText(ResetPwdActivity.this, "修改成功",
 										Toast.LENGTH_LONG).show();
-								Intent intent = new Intent(ResetPwdActivity.this, RegisterActivity.class);
+								Intent intent = new Intent(ResetPwdActivity.this, LoginActivity.class);
 								startActivity(intent);
 								finish();
 

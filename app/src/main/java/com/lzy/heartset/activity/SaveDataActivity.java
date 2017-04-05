@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class SaveDataActivity extends Activity implements View.OnClickListener {
 
-    private static final String URL_COLLECT_DATA = "http://10.108.224.77:8080/detect3/CollectServlet";
+    private static final String URL_COLLECT_DATA = GlobalData.URL_HEAD+":8080/detect3/CollectServlet";
     private EditText et_mUserName;
     private EditText et_mAge;
     private RadioGroup rg_mSex;
@@ -44,10 +44,10 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
     private EditText et_mFatigue;
     private Button btn_mSaveDataBtn;
     private String mfileName;
-    private Spinner mSpinnerDiet, mSpinnerWeather;
+    private Spinner mSpinnerDiet, mSpinnerWeather, mSpinnerHealth, mSpinnerSport, mSpinnerNap;
     private EditText mEtHeight, mEtWeight;
-    private String mUserName="";
-    private MeasureData mMeasureData=new MeasureData();
+    private String mUserName = "";
+    private MeasureData mMeasureData = new MeasureData();
     private int mHeight = -1;
     private int mWeight = -1;
     private int mAge = -1;
@@ -67,9 +67,9 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         mMeasureData = (MeasureData) getIntent().getSerializableExtra("measure_data");
-        Gson gson=new Gson();
-         mMeasureDataString=gson.toJson(mMeasureData);
-        Log.i("mMeasureDataString",mMeasureDataString);
+        Gson gson = new Gson();
+        mMeasureDataString = gson.toJson(mMeasureData);
+        Log.i("mMeasureDataString", mMeasureDataString);
         super.onResume();
     }
 
@@ -103,6 +103,9 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
 
         mSpinnerDiet = (Spinner) findViewById(R.id.id_spinner_diet);
         mSpinnerWeather = (Spinner) findViewById(R.id.id_spinner_weather);
+        mSpinnerHealth = (Spinner) findViewById(R.id.id_spinner_health);
+        mSpinnerSport = (Spinner) findViewById(R.id.id_spinner_sport);
+        mSpinnerNap = (Spinner) findViewById(R.id.id_spinner_nap);
 
         getUserInformationFromSP();
 
@@ -206,10 +209,10 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (checkedId == rb_mMan.getId()) {
 //                            mUserDataBean.setSex(0);
-                            mSex=0;
+                            mSex = 0;
                         } else {
 //                            mUserDataBean.setSex(1);
-                            mSex=1;
+                            mSex = 1;
                         }
                     }
                 });
@@ -256,12 +259,11 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COLLECT_DATA, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Gson gson=new Gson();
-                ResponseBean responseBean=gson.fromJson(s,ResponseBean.class);
-                Toast.makeText(getApplication(),responseBean.toString(),Toast.LENGTH_LONG).show();
+                Gson gson = new Gson();
+                ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
+                Toast.makeText(getApplication(), responseBean.toString(), Toast.LENGTH_LONG).show();
                 saveUserInformationToSP();
-                if (responseBean.getCode()==0)
-                {
+                if (responseBean.getCode() == 0) {
 
                 }
             }
@@ -284,9 +286,13 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                 map.put("height", String.valueOf(mHeight));
                 map.put("weight", String.valueOf(mWeight));
                 map.put("weather", mSpinnerWeather.getSelectedItem().toString());
+                map.put("health", mSpinnerHealth.getSelectedItem().toString());
+                map.put("sport", mSpinnerSport.getSelectedItem().toString());
                 map.put("diet", mSpinnerDiet.getSelectedItem().toString());
-                map.put("all_data","");
-                Log.i("收集数据",map.toString());
+                map.put("nap", mSpinnerNap.getSelectedItem().toString());
+
+                map.put("all_data", mMeasureDataString);
+                Log.i("收集数据", map.toString());
                 return map;
             }
         };
@@ -298,22 +304,21 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("username", mUserName);
         editor.putInt("sex", mSex);
-        editor.putInt("age",mAge);
-        editor.putInt("height",mHeight);
-        editor.putInt("weight",mWeight);
+        editor.putInt("age", mAge);
+        editor.putInt("height", mHeight);
+        editor.putInt("weight", mWeight);
 
         editor.apply();
     }
 
-    private void getUserInformationFromSP(){
+    private void getUserInformationFromSP() {
         SharedPreferences sp = getSharedPreferences("information", Context.MODE_PRIVATE);
-        if (sp!=null)
-        {
+        if (sp != null) {
             et_mUserName.setText(sp.getString("username", "")); // 第二个参数为默认值
-            et_mAge.setText(sp.getInt("age",-1)+"");
-            mEtHeight.setText(sp.getInt("height",-1)+"");
-            mEtWeight.setText(sp.getInt("weight",-1)+"");
-            switch (sp.getInt("sex",0)) {
+            et_mAge.setText(sp.getInt("age", -1) + "");
+            mEtHeight.setText(sp.getInt("height", -1) + "");
+            mEtWeight.setText(sp.getInt("weight", -1) + "");
+            switch (sp.getInt("sex", 0)) {
                 case 0:
                     rb_mMan.setChecked(true);
                     break;

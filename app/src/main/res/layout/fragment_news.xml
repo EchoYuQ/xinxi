@@ -4,6 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@color/main">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="资讯"
+            android:textColor="@color/title_white"
+            android:textSize="20sp" />
+
+
+    </RelativeLayout>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fresh"
         android:layout_width="match_parent"

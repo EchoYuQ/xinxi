@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
@@ -21,13 +20,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.lzy.heartset.R;
+import com.lzy.heartset.bean.HistoryDataItemBean;
 import com.lzy.heartset.bean.ResponseBean;
 import com.lzy.heartset.fragment.DayHistoryFragment;
 import com.lzy.heartset.fragment.MonthHistoryFragment;
 import com.lzy.heartset.fragment.WeekHistoryFragment;
 import com.lzy.heartset.fragment.YearHistoryFragment;
 import com.lzy.heartset.utils.GlobalData;
-import com.lzy.heartset.utils.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ import java.util.Map;
  */
 public class HistoryActivity extends Activity {
 
-    private static final String URL_HISTORY = "http://10.108.224.77:8080/detect3/HistoryServlet";
+    private static final String URL_HISTORY = GlobalData.URL_HEAD+":9000/detect3/HistoryServlet";
     // 临时测试用
 //    private static final String URL_HISTORY = "http://101.200.89.170:9000/capp/login/normal";
     RadioGroup mRadioGroup;
@@ -58,10 +57,18 @@ public class HistoryActivity extends Activity {
 
     ListView mListView;
     private String mDate;
-    private int mType;
+    private int mTimeType;
+
+    public enum MeasureType {HEART_RATE, BLOOD_OXYGEN, PRESSURE}
+
+    ;
+    private MeasureType mMeasureType;
     private static final int DAY = 1;
     private static final int WEEK = 2;
     private static final int MONTH = 3;
+    private static final int YEAR = 4;
+
+    List<HistoryDataItemBean> mHistoryDataItemList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +92,7 @@ public class HistoryActivity extends Activity {
                 switch (checkedId) {
 
                     case R.id.rb_day:
-                        mType = DAY;
+                        mTimeType = DAY;
 //                        if (mDayHistoryFragment == null) {
 //                            mDayHistoryFragment = new DayHistoryFragment();
 //                        }
@@ -93,20 +100,21 @@ public class HistoryActivity extends Activity {
 
                         break;
                     case R.id.rb_week:
-                        mType = WEEK;
+                        mTimeType = WEEK;
 //                        if (mWeekHistoryFragment == null) {
 //                            mWeekHistoryFragment = new WeekHistoryFragment();
 //                        }
 //                        transaction.replace(R.id.fl_history, mWeekHistoryFragment);
                         break;
                     case R.id.rb_month:
-                        mType = MONTH;
+                        mTimeType = MONTH;
 //                        if (mMonthHistoryFragment == null) {
 //                            mMonthHistoryFragment = new MonthHistoryFragment();
 //                        }
 //                        transaction.replace(R.id.fl_history, mMonthHistoryFragment);
                         break;
                     case R.id.rb_year:
+                        mTimeType = YEAR;
 //                        if (mYearHistoryFragment == null) {
 //                            mYearHistoryFragment = new YearHistoryFragment();
 //                        }
@@ -116,7 +124,7 @@ public class HistoryActivity extends Activity {
                         break;
 
                 }
-                postToServer(HistoryActivity.this,mType,transaction);
+                postToServer(HistoryActivity.this, mTimeType, transaction);
 
             }
         });
@@ -127,7 +135,7 @@ public class HistoryActivity extends Activity {
     private void setDefaultFragment() {
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        postToServer(HistoryActivity.this,DAY,transaction);
+        postToServer(HistoryActivity.this, DAY, transaction);
     }
 
     private void initView() {
@@ -140,10 +148,6 @@ public class HistoryActivity extends Activity {
         mRbDay.setChecked(true);
 
         mListView = (ListView) findViewById(R.id.lv_history);
-        SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.list_item1,
-                new String[]{"day", "time", "value", "suggestion"},
-                new int[]{R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
-        mListView.setAdapter(adapter);
 
 
     }
@@ -151,54 +155,60 @@ public class HistoryActivity extends Activity {
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+        String[] pressure_suggestions = {"心理压力低", "心理压力中等", "心理压力高"};
+        String[] blood_oxygten_suggestions = {"血氧含量低", "血氧含量中等", "血压含量高"};
+        String[] heartrate_suggestions = {"心率慢", "心率正常", "心率快"};
+        for (int i = 0; i < mHistoryDataItemList.size(); i++) {
+            HistoryDataItemBean item = mHistoryDataItemList.get(i);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("day", item.getDate());
+            map.put("time", item.getTime());
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+            switch (mMeasureType) {
+                case HEART_RATE:
+                    int heartrate = item.getHeart_rate();
+                    map.put("value", heartrate);
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+                    if (heartrate < 60) {
+                        map.put("suggestion", heartrate_suggestions[0]);
+                    } else if (heartrate < 90) {
+                        map.put("suggestion", heartrate_suggestions[1]);
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+                    } else {
+                        map.put("suggestion", heartrate_suggestions[2]);
+                    }
+                    break;
+                case BLOOD_OXYGEN:
+                    int bloodoxygen = item.getBlood_oxygen();
+                    map.put("value", bloodoxygen);
+                    if (bloodoxygen < 93) {
+                        map.put("suggestion", heartrate_suggestions[0]);
+                    } else if (bloodoxygen < 98) {
+                        map.put("suggestion", heartrate_suggestions[1]);
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+                    } else {
+                        map.put("suggestion", heartrate_suggestions[2]);
+                    }
+                    break;
+                case PRESSURE:
+                    int pressure = item.getPressure();
+                    map.put("value", pressure);
+                    if (pressure < 93) {
+                        map.put("suggestion", heartrate_suggestions[0]);
+                    } else if (pressure < 98) {
+                        map.put("suggestion", heartrate_suggestions[1]);
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+                    } else {
+                        map.put("suggestion", heartrate_suggestions[2]);
+                    }
+                    break;
 
-        map.put("day", "2017-01-01");
-        map.put("time", "12:00:00");
-        map.put("value", "80");
-        map.put("suggestion", "心率正常");
-        list.add(map);
+            }
+
+
+            list.add(map);
+        }
         return list;
     }
 
@@ -207,6 +217,7 @@ public class HistoryActivity extends Activity {
      *
      * @param context
      */
+
     private void postToServer(final Context context, final int type, final FragmentTransaction transaction) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
@@ -225,6 +236,7 @@ public class HistoryActivity extends Activity {
                         if (responseBean.getCode() == 0) {
 //                        if (true) {
                             Toast.makeText(HistoryActivity.this, responseBean.toString(), Toast.LENGTH_SHORT).show();
+                            // TODO: 2017/4/4  解析服务器返回的历史数据，并存到 mHistoryDataItemList
 
                             switch (type) {
                                 case DAY:
@@ -245,8 +257,19 @@ public class HistoryActivity extends Activity {
                                     }
                                     transaction.replace(R.id.fl_history, mMonthHistoryFragment);
                                     break;
+                                case YEAR:
+                                    if (mYearHistoryFragment == null) {
+                                        mYearHistoryFragment = new YearHistoryFragment();
+                                    }
+                                    transaction.replace(R.id.fl_history, mYearHistoryFragment);
+                                    break;
 
                             }
+//                            GlobalData.historyDataItemBeanList = mHistoryDataItemList;
+//                            SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
+//                                    new String[]{"day", "time", "value", "suggestion"},
+//                                    new int[]{R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+//                            mListView.setAdapter(adapter);
                             transaction.commit();
                         }
 
@@ -256,11 +279,117 @@ public class HistoryActivity extends Activity {
 
                 }
 
-                , new Response.ErrorListener()
-        {
+                , new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("请求失败", error.getMessage(), error);
+                switch (type) {
+                    case DAY:
+                        mHistoryDataItemList.clear();
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 50, 65, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
+                        if (mDayHistoryFragment == null) {
+                            mDayHistoryFragment = new DayHistoryFragment();
+                        }
+                        transaction.replace(R.id.fl_history, mDayHistoryFragment);
+
+                        break;
+                    case WEEK:
+                        mHistoryDataItemList.clear();
+
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
+
+
+                        if (mWeekHistoryFragment == null) {
+                            mWeekHistoryFragment = new WeekHistoryFragment();
+                        }
+                        transaction.replace(R.id.fl_history, mWeekHistoryFragment);
+                        break;
+                    case MONTH:
+                        mHistoryDataItemList.clear();
+
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-11", "03:20:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-11", "03:46:30", 50, 99, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "05:20:30", 50, 86, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "08:10:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "08:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-14", "08:50:30", 50, 63, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-15", "09:20:30", 50, 65, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-15", "12:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-26", "12:40:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "12:45:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "13:20:30", 50, 79, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "14:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "15:20:30", 50, 70, 95));
+                        if (mMonthHistoryFragment == null) {
+                            mMonthHistoryFragment = new MonthHistoryFragment();
+                        }
+                        transaction.replace(R.id.fl_history, mMonthHistoryFragment);
+                        break;
+                    case YEAR:
+                        mHistoryDataItemList.clear();
+
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 50, 65, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
+                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
+                        if (mYearHistoryFragment == null) {
+                            mYearHistoryFragment = new YearHistoryFragment();
+                        }
+                        transaction.replace(R.id.fl_history, mYearHistoryFragment);
+                        break;
+                }
+                GlobalData.historyDataItemBeanList = mHistoryDataItemList;
+                SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
+                        new String[]{"day", "time", "value", "suggestion"},
+                        new int[]{R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+                mListView.setAdapter(adapter);
+                transaction.commit();
             }
         }
 
@@ -275,7 +404,7 @@ public class HistoryActivity extends Activity {
                 map.put("userid", GlobalData.getUserid() + "");
                 map.put("date", mDate);
                 map.put("type", String.valueOf(type));
-                map.put("sort_type","1");
+                map.put("sort_type", "1");
                 return map;
             }
         };

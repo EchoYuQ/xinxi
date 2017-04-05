@@ -19,4 +19,20 @@
         <item>冰雹</item>
     </string-array>
 
+    <string-array name="health_array">
+        <item>健康</item>
+        <item>虚弱</item>
+        <item>生病</item>
+    </string-array>
+
+    <string-array name="sport_array">
+        <item>未运动</item>
+        <item>运动后</item>
+    </string-array>
+
+    <string-array name="nap_array">
+        <item>未午睡</item>
+        <item>午睡后</item>
+    </string-array>
+
 </resources>

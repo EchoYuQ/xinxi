@@ -4,16 +4,11 @@ package com.lzy.heartset.fragment;
  * Created by yuqing on 2017/3/4.
  */
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +16,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.lzy.heartset.R;
@@ -30,11 +24,6 @@ import com.lzy.heartset.activity.MyInformationActivity;
 import com.lzy.heartset.ui.RoundImageView;
 import com.lzy.heartset.utils.FileUtil;
 import com.lzy.heartset.utils.GlobalData;
-import com.lzy.heartset.utils.Tools;
-
-import java.io.File;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 
 /**
@@ -81,11 +70,12 @@ public class MineFragment extends Fragment {
         mIvUimage = (RoundImageView) view.findViewById(R.id.iv_uimage);// 头像
 
 
-        mTvName = (TextView) view.findViewById(R.id.tv_name);// 立即登录
+        mTvName = (TextView) view.findViewById(R.id.tv_name);
+        mTvName.setText(GlobalData.username);
         // 我的订单、我的收藏、账号管理
-        mRlAppoint = (RelativeLayout) view.findViewById(R.id.rl_appoint);
-        mRlCollects = (RelativeLayout) view.findViewById(R.id.rl_collects);
-        mRlInfo = (RelativeLayout) view.findViewById(R.id.rl_info);
+        mRlAppoint = (RelativeLayout) view.findViewById(R.id.rl_myinfo);
+        mRlCollects = (RelativeLayout) view.findViewById(R.id.rl_history);
+//        mRlInfo = (RelativeLayout) view.findViewById(R.id.rl_info);
         mRlQuit = (RelativeLayout) view.findViewById(R.id.rl_quit);
 
 
@@ -95,7 +85,7 @@ public class MineFragment extends Fragment {
 
         mRlAppoint.setOnClickListener(iv_listener);
         mRlCollects.setOnClickListener(iv_listener);
-        mRlInfo.setOnClickListener(iv_listener);
+//        mRlInfo.setOnClickListener(iv_listener);
         mRlQuit.setOnClickListener(iv_listener);
     }
 
@@ -114,16 +104,16 @@ public class MineFragment extends Fragment {
                     startActivity(new Intent(mContext, MyInformationActivity.class));
                     break;
 
-                case R.id.rl_appoint:
+                case R.id.rl_myinfo:
                     // 跳转至已完成订单页面
 //                        startActivity(new Intent(getActivity(), MyIndent.class));
                     break;
-                case R.id.rl_collects:
+                case R.id.rl_history:
                     // 跳转至我的收藏页面
 //                        startActivity(new Intent(getActivity(), ShowCollect.class));
 
                     break;
-                case R.id.rl_info:
+//                case R.id.rl_info:
                     // 跳转至账号管理界面
 //                    if (mIsLogin == true) {
 //                        startActivity(new Intent(getActivity(),
@@ -132,7 +122,7 @@ public class MineFragment extends Fragment {
 //                        Toast.makeText(getActivity(), "请先登录", 1).show();
 //                    }
 
-                    break;
+//                    break;
                 case R.id.rl_quit:
                     // 跳转至登录界面
 //                    if (mIsLogin == true) {

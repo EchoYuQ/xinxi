@@ -46,8 +46,8 @@ public class LoginActivity extends Activity {
     LoginInfo loginInfo = new LoginInfo();
 
     // 对端口号和URI的定义
-    private static final String URL_LOGIN = "http://101.200.89.170:9000/capp/login/normal";
-//            String URL_LOGIN = "http://10.108.224.77:8080/detect3/LoginServlet";
+    private static final String URL_LOGIN = GlobalData.URL_HEAD+":9000/capp/login/normal";
+//    private static final String URL_LOGIN = "http://10.108.224.77:8080/detect3/LoginServlet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,19 +157,7 @@ public class LoginActivity extends Activity {
 
     }
 
-    /*
-     * 调用登录的API
-     */
-//    String invokeLoginAPI() {
-//
-//        List<NameValuePair> params = new ArrayList<NameValuePair>();
-//        params.add(new BasicNameValuePair("phone", str_name));
-//        params.add(new BasicNameValuePair("password", str_pwd));
-//
-//        MyHttpPost httpPost = new MyHttpPost(GlobalData.URL_HEAD + ":" + PORT + URI, params);
-//        // MyHttpPost类中的doPost方法return服务器返回的JSON字符串
-//        return httpPost.doPost();
-//    }
+
 
     void login() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -205,7 +193,25 @@ public class LoginActivity extends Activity {
 //                            } catch (Exception e) {
 //                                e.printStackTrace();
 //                            }
-                            // 回到我的界面
+
+                            String jsonString =  responseBean.getBody();
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonString);
+                                if (jsonObject.has("username"))
+                                    GlobalData.username=jsonObject.getString("username");
+                                if (jsonObject.has("userid"))
+                                    GlobalData.userid=(jsonObject.getString("userid"));
+                                if (jsonObject.has("sex"))
+                                    GlobalData.sex=(jsonObject.getInt("sex"));
+                                if (jsonObject.has("birthday"))
+                                    GlobalData.birthday=(jsonObject.getString("birthday"));
+                                if (jsonObject.has("tel"))
+                                    GlobalData.tel=(jsonObject.getString("tel"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            // 到主界面
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -223,12 +229,12 @@ public class LoginActivity extends Activity {
             protected Map<String, String> getParams() {
                 //在这里设置需要post的参数
                 Map<String, String> map = new HashMap<String, String>();
-
-//                map.put("tel",str_name);
-//                map.put("password",str_pwd);
-
                 map.put("phone", str_name);
-                map.put("password", str_pwd);
+                map.put("tel",str_name);
+                map.put("password",str_pwd);
+
+//                map.put("phone", str_name);
+//                map.put("password", str_pwd);
                 return map;
             }
         };
@@ -243,6 +249,7 @@ public class LoginActivity extends Activity {
         SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         GlobalData.setTel(str_name);
+
         editor.putString("username", str_name);
         editor.putString("password", str_pwd);
         // editor.putBoolean()、editor.putInt()、editor.putFloat()……

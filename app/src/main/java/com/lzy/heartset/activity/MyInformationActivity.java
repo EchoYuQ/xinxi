@@ -74,7 +74,7 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
 
     // 用户缓存
     private SharedPreferences preferences;
-    private static final String URL_CHANGE_INFORMATION = "http://10.108.224.77:8080/detect3/ChangeServlet";
+    private static final String URL_CHANGE_INFORMATION = GlobalData.URL_HEAD+":8080/detect3/ChangeServlet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,10 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
 
         mEtName.setText(GlobalData.getUsername());
         mEtEmail.setText(GlobalData.getEmail());
-        mTvSex.setText(items_sex[GlobalData.getSex()]);
+        if (GlobalData.getSex() != -1) {
+            mTvSex.setText(items_sex[GlobalData.getSex()]);
+
+        }
         mTvBirthday.setText(GlobalData.getBirthday());
 
         mHeadPicture.setOnClickListener(this);
@@ -326,13 +329,13 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
                 Gson gson = new Gson();
                 ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
                 if (responseBean.getCode() == 0) {
-                    GlobalData.setUsername(mName);
-                    GlobalData.setSex(mSex_Int);
-                    GlobalData.setEmail(mEmail);
-                    GlobalData.setBirthday(mBirthday);
+                    GlobalData.username=(mName);
+                    GlobalData.sex=(mSex_Int);
+                    GlobalData.email=(mEmail);
+                    GlobalData.birthday=(mTvBirthday.getText().toString().trim());
+                    Toast.makeText(mContext, "修改成功", Toast.LENGTH_LONG).show();
+                    finish();
                 }
-                Toast.makeText(mContext, "修改成功", Toast.LENGTH_LONG).show();
-                finish();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -350,7 +353,7 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
                 map.put("username", mName);
                 map.put("sex", String.valueOf(mSex_Int));
                 map.put("email", mEmail);
-                map.put("birthday", mBirthday);
+                map.put("birthday", mTvBirthday.getText().toString().trim());
                 map.put("identification", "");
                 Log.i("Information Params", map.toString());
                 return map;

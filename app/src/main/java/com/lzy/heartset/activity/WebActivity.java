@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
 
 import com.lzy.heartset.R;
 
@@ -17,24 +18,24 @@ import com.lzy.heartset.R;
 
 public class WebActivity extends Activity {
 
-    Toolbar toolbar;
     WebView webView;
+    ImageView mIvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_web);
-//        ButterKnife.inject(this);
-        toolbar= (Toolbar) findViewById(R.id.toolbar);
         webView= (WebView) findViewById(R.id.webView);
+        mIvBack= (ImageView) findViewById(R.id.id_iv_back_news);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 finish();
             }
         });
+
         String url = getIntent().getStringExtra("url");
         WebSettings webSettings = webView.getSettings();
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);

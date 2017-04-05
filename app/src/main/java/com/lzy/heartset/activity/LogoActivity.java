@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +19,10 @@ import com.google.gson.JsonObject;
 import com.lzy.heartset.R;
 import com.lzy.heartset.bean.LoginInfo;
 import com.lzy.heartset.bean.ResponseBean;
+import com.lzy.heartset.utils.GlobalData;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +33,9 @@ public class LogoActivity extends Activity {
     private String mUsername;
     private String mPassword;
     private boolean mIsLoginSuccess = true;
+
+//    private static final String URL_LOGIN = "http://101.200.89.170:9000/capp/login/normal";
+    private static final String URL_LOGIN = GlobalData.URL_HEAD+":8080/detect3/LoginServlet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +65,10 @@ public class LogoActivity extends Activity {
 
     void login() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        String urlString = "http://101.200.89.170:9000/capp/login/normal";
+
 
         //将JSONObject作为，将上一步得到的JSONObject对象作为参数传入
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlString,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -73,9 +81,26 @@ public class LogoActivity extends Activity {
 
                         // TODO: 2017/3/20 加一个GlobalData
 
-                        if (responseBean.getCode()==0) {
+                        if (responseBean.getCode() == 0) {
+                            Toast.makeText(LogoActivity.this,responseBean.toString(),Toast.LENGTH_LONG).show();
                             // 跳转到主界面
                             startActivity(new Intent(LogoActivity.this, MainActivity.class));
+                            String jsonString =  responseBean.getBody();
+                            try {
+                                JSONObject jsonObject = new JSONObject(jsonString);
+                                if (jsonObject.has("username"))
+                                    GlobalData.username=jsonObject.getString("username");
+                                if (jsonObject.has("userid"))
+                                    GlobalData.userid=(jsonObject.getString("userid"));
+                                if (jsonObject.has("sex"))
+                                    GlobalData.sex=(jsonObject.getInt("sex"));
+                                if (jsonObject.has("birthday"))
+                                    GlobalData.birthday=(jsonObject.getString("birthday"));
+                                if (jsonObject.has("tel"))
+                                    GlobalData.tel=(jsonObject.getString("tel"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             // 跳转到登录界面
                             startActivity(new Intent(LogoActivity.this, LoginActivity.class));
@@ -86,6 +111,8 @@ public class LogoActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("请求失败", error.getMessage(), error);
+                // 跳转到登录界面
+                startActivity(new Intent(LogoActivity.this, LoginActivity.class));
             }
         }) {
             @Override
@@ -95,8 +122,8 @@ public class LogoActivity extends Activity {
                 load();
                 //在这里设置需要post的参数
                 Map<String, String> map = new HashMap<String, String>();
-//                map.put("phone", "15210035181");
                 map.put("phone", mUsername);
+                map.put("tel", mUsername);
 //                map.put("password", "123456");
                 map.put("password", mPassword);
                 return map;
@@ -111,8 +138,7 @@ public class LogoActivity extends Activity {
 
     void load() {
         SharedPreferences sp = getSharedPreferences("config", Context.MODE_PRIVATE);
-        if (sp!=null)
-        {
+        if (sp != null) {
             mUsername = sp.getString("username", ""); // 第二个参数为默认值
             mPassword = sp.getString("password", ""); // 第二个参数为默认值
         }

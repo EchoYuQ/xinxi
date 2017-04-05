@@ -34,6 +34,18 @@ public class MeasureFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        rippleImageView.startWaveAnimation();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        rippleImageView.stopWaveAnimation();
+        super.onPause();
+    }
+
     void initView()
     {
         hintImageView= (ImageView) view.findViewById(R.id.iv_hintanimation);
@@ -43,7 +55,6 @@ public class MeasureFragment extends Fragment {
         animationDrawable.start();
 
         rippleImageView= (RippleImageView) view.findViewById(R.id.rippleImageView);
-        rippleImageView.startWaveAnimation();
 
         startImageView=rippleImageView.getImageView();
         startImageView.setOnClickListener(new View.OnClickListener() {

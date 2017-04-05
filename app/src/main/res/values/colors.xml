@@ -74,12 +74,30 @@
     <color name="indicator_light">#FFEFEFEF</color>
     <color name="indicator_gray">@color/normal_gray</color>
 
-    <color name="line">#dacece</color>
     <color name="line_alert_color">@color/normal_gray</color>
     <color name="line_progress_background">@color/normal_gray</color>
     <color name="line_progress_color">@color/normal_green</color>
     <color name="line_indicator_text_color">@color/normal_white</color>
     <color name="line_indicator_background">@color/normal_green</color>
 
-    <color name="main">#3dd2cc</color>
+    <color name="main">#55c364</color>
+    <color name="title_white">#FFF8F8F9</color>
+    <color name="bg_white">#FAFAFA</color>
+    <color name="text_black">#333333</color>
+    <color name="text_black_1">#666666</color>
+    <color name="text_black_2">#576272</color>
+    <color name="text_white">#FCFDFD</color>
+    <color name="text_green">#a269af73</color>
+    <color name="line">#bfbfbf</color>
+    <color name="bg_login">#f8f5f1</color>
+
+    <color name="bg_green">#164a33</color>
+    <color name="line_green">#ACD378</color>
+    <color name="progress_green">#C9DD7B</color>
+
+    <color name="pressure_low">#CDE17A</color>
+    <color name="pressure_middle">#69AF73</color>
+    <color name="pressure_high">#3D6743</color>
+
+
 </resources>

@@ -4,157 +4,220 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <!-- 创建一个图片显示区域 -->
-    <ImageView
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/login_icon" />
-
-    <!-- 创建一个横线 颜色是#808080（深灰色），高度1dp -->
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="30dp"
-        android:background="#808080" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <!--
-         	下方代码解释
-	         android:layout_gravity="center_vertical" 控件位置为垂直居中（只对LinearLayout布局中的水平布局中的控件有效）  
-	         android:layout_marginLeft="10dp" 该控件与左边有10dp的间隔
-        -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:text="账 号："
-            android:textSize="16sp" />
-        <!--
-			下方代码解释
-			android:background="@null" EditText控件默认背景是有边框的，该代码设置EditText控件为无边框状态
-			android:hint="请输入手机号" EditText控件在无文本输入时显示"请输入手机号"的提示
-        -->
-
-        <EditText
-            android:id="@+id/et_login_username"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:background="@null"
-            android:digits="0123456789"
-            android:hint="请输入手机号"
-            android:inputType="phone"
-            android:maxLength="11"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <!-- 定义一个横线 颜色是#bfbfbf（浅灰色），高度1dp -->
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#bfbfbf" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:text="密 码："
-            android:textSize="16sp" />
-        <!--
-     		下方代码解释
-            android:password="true" 设置该文本框是一个密码框（以点代替字符）
-        -->
-
-        <EditText
-            android:id="@+id/et_login_password"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:background="@null"
-            android:hint="请输入密码"
-            android:password="true"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#808080" />
-    <!--
-     	下方代码解释
-        android:background="@drawable/btn_white" 设置该Button的背景属性为btn_white，
-        btn_white是作者定义的Button样式，为白色有边框的Button，详情请见工程目录res\drawable-hdpi\btn_white.xml文件
-    -->
-
-    <Button
-        android:id="@+id/btn_login_yes"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/btn_white"
-        android:text="登录" />
-
-
-
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="20dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_cloud">
 
-        <!--
-			下方代码解释
-			该Button是在RelativeLayout相对布局中
-			android:layout_alignParentLeft="true" 设置该Button位于父控件的左侧
-			android:layout_margin="3dp" 设置该Button周围边距为3dp
-			android:background="@android:color/transparent" 设置该Button控件是透明的
-			android:textColor="#003399"设置该控件字体颜色为#003399（深蓝色）
-        -->
-
-        <Button
-            android:id="@+id/btn_login_register"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="3dp"
-            android:background="@android:color/transparent"
-            android:text="快速注册"
-            android:textColor="#003399"
-            android:textSize="12sp" />
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
 
-        <!--
-	                       下方代码解释
-	                       该Button是在RelativeLayout相对布局中
-			android:layout_alignParentRight="true" 设置该Button位于父控件的右侧
-			android:layout_margin="3dp" 设置该Button周围边距为3dp
-			android:background="@android:color/transparent" 设置该Button控件是透明的
-			android:textColor="#003399"设置该控件字体颜色为#003399（深蓝色）
-        -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="XINXI"
+                android:textSize="30sp"
+                android:textColor="@color/text_white" />
 
-        <Button
-            android:id="@+id/btn_login_resetpwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="3dp"
-            android:background="@android:color/transparent"
-            android:text="忘记密码"
-            android:textColor="#003399"
-            android:textSize="12sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="您的压力管家"
+                android:textColor="@color/text_white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="-心系-"
+                android:textColor="@color/text_white"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/logo_heart"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bolang" />
+
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@color/bg_login">
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="75dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/point1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="45dp"
+                    android:text="账 号"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_black_2"/>
+
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/et_login_username"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="13dp"
+                android:layout_marginLeft="45dp"
+                android:background="@null"
+                android:digits="0123456789"
+                android:hint="请输入手机号"
+                android:inputType="phone"
+                android:maxLength="11"
+                android:textSize="15sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="3dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="75dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/point1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="45dp"
+                    android:text="密 码"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_black_2"/>
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_login_password"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="13dp"
+                android:background="@null"
+                android:hint="请输入密码"
+                android:password="true"
+                android:textSize="15sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/line"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="3dp"/>
+        </LinearLayout>
+
+
+
+        <Button
+            android:id="@+id/btn_login_yes"
+
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/btn_login"
+            android:layout_marginTop="15dp"
+            android:text="登录"
+            android:textColor="@color/text_green"
+            android:textSize="16sp"/>
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            >
+
+
+
+            <Button
+                android:id="@+id/btn_login_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="35dp"
+                android:background="@android:color/transparent"
+                android:text="快速注册"
+                android:textColor="@color/text_green"
+                android:textSize="12sp" />
+
+
+
+            <Button
+                android:id="@+id/btn_login_resetpwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="35dp"
+                android:background="@android:color/transparent"
+                android:text="忘记密码"
+                android:textColor="@color/text_green"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
 
 </LinearLayout>

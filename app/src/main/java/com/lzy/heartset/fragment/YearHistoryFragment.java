@@ -2,18 +2,22 @@ package com.lzy.heartset.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.lzy.heartset.R;
+import com.lzy.heartset.bean.HistoryDataItemBean;
+import com.lzy.heartset.utils.GlobalData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lecho.lib.hellocharts.listener.ComboLineColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.ComboLineColumnChartData;
@@ -34,7 +38,8 @@ public class YearHistoryFragment extends Fragment {
 
     private int numberOfLines = 1;
     private int maxNumberOfLines = 4;
-    private int numberOfPoints = 50;
+    private int numberOfPoints = 24 * 60;
+
 
     float[][] randomNumbersTab = new float[maxNumberOfLines][numberOfPoints];
 
@@ -45,6 +50,11 @@ public class YearHistoryFragment extends Fragment {
     private boolean isCubic = false;
     private boolean hasLabels = false;
 
+    private String[] minutes = new String[24 * 60];
+    private LineChartData mLineChartData;
+    private ColumnChartData mColumnChartData;
+    List<HistoryDataItemBean> historyList = GlobalData.historyDataItemBeanList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history_year, container, false);
@@ -52,9 +62,57 @@ public class YearHistoryFragment extends Fragment {
 
         mDayChart.setOnValueTouchListener(new ValueTouchListener());
 
+        generateXText();
+        generateXY();
         generateValues();
         generateData();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        historyList.clear();
+        super.onDestroyView();
+    }
+
+    /**
+     * 将 2:35  20:40等时间转化成x坐标
+     *
+     * @param hour
+     * @param min
+     * @return
+     */
+    private int calculateX(int hour, int min) {
+
+        return hour * 60 + min;
+    }
+
+    /**
+     * 将 2:35  20:40等时间转化成x坐标
+     *
+     * @param time
+     * @return
+     */
+    private int calculateX(String time) {
+        String[] time_array = time.split(":");
+        if (time_array.length > 0) {
+            return calculateX(Integer.parseInt(time_array[0]), Integer.parseInt(time_array[1]));
+        } else {
+            Log.e("calculateX()错误", "时间格式不对，应为10:10:10");
+            return 0;
+
+        }
+
+
+    }
+
+    private void generateXText() {
+
+        for (int i = 0; i < 24 * 60; i++) {
+            String hour = String.valueOf(i / 60);
+            String minute = i % 60 < 10 ? "0" + String.valueOf(i % 60) : String.valueOf(i % 60);
+            minutes[i] = hour + ":" + minute;
+        }
     }
 
     private void generateValues() {
@@ -77,12 +135,97 @@ public class YearHistoryFragment extends Fragment {
 
     }
 
-    private void generateData() {
-        // Chart looks the best when line data and column data have similar maximum viewports.
-        data = new ComboLineColumnChartData(generateColumnData(), generateLineData());
+    /**
+     * 计算出折线图和柱形图的数据集
+     */
+    private void generateXY() {
+        List<List<Float>> listList = new ArrayList<>();
+        for (int i = 0; i < minutes.length; i++) {
+            List<Float> list = new ArrayList<>();
+            listList.add(list);
+        }
 
+
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 50, 65, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
+//        historyList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
+
+
+//        int x = calculateX(15, 20);
+//        listList.get(x).add(100f);
+//        int x1 = calculateX(15, 10);
+//        listList.get(x1).add(90f);
+//        int x2 = calculateX(15, 40);
+//        listList.get(x2).add(68f);
+//        int x3 = calculateX("16:30");
+//        listList.get(x3).add(78f);
+//        listList.get(calculateX("16:30")).add(78f);
+//        listList.get(calculateX("12:30")).add(72f);
+//        listList.get(calculateX("16:20")).add(75f);
+//        listList.get(calculateX("16:38")).add(76f);
+
+//        for (int i=0;i<hours.length;i++)
+//        Log.e("listList",listList.get(i).size()+"");
+
+
+        List<Line> lines = new ArrayList<Line>();
+        List<Column> columns = new ArrayList<Column>();
+        for (int i = 0; i < numberOfLines; ++i) {
+
+            List<PointValue> values1 = new ArrayList<PointValue>();
+//            List<SubcolumnValue> values2;
+
+            for (int j = 0; j < historyList.size(); ++j) {
+                // 平均值放入折线图数据集中
+                String time = historyList.get(j).getTime();
+                float resY = (float) historyList.get(j).getHeart_rate();
+                values1.add(new PointValue(calculateX(time), resY));
+//                if (listList.get(j).size() > 0) {
+//
+//                    values1.add(new PointValue(j, resY[0]));
+//                }
+
+//                values2 = new ArrayList<SubcolumnValue>();
+//                Log.e("resY", resY[0] + " " + resY[1] + " " + resY[2]);
+//                values2.add(new SubcolumnValue(resY[1], resY[2], ChartUtils.COLOR_GREEN));
+//                columns.add(new Column(values2));
+            }
+
+            Line line = new Line(values1);
+            line.setColor(ChartUtils.COLORS[i]);
+            line.setCubic(isCubic);
+            line.setHasLabels(hasLabels);
+            line.setHasLines(hasLines);
+            line.setHasPoints(hasPoints);
+            lines.add(line);
+        }
+
+        mLineChartData = new LineChartData(lines);
+//        mColumnChartData = new ColumnChartData(columns);
+
+
+    }
+
+    private void generateData() {
+
+        data = new ComboLineColumnChartData(mColumnChartData, mLineChartData);
+        List<AxisValue> axisValues = new ArrayList<AxisValue>();
+        for (int i = 0; i < numberOfPoints; i++) {
+            axisValues.add(new AxisValue(i).setLabel(minutes[i]));
+
+        }
         if (hasAxes) {
-            Axis axisX = new Axis();
+            Axis axisX = new Axis(axisValues);
             Axis axisY = new Axis().setHasLines(true);
             if (hasAxesNames) {
                 axisX.setName("Axis X");
@@ -228,7 +371,7 @@ public class YearHistoryFragment extends Fragment {
 
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
-            Toast.makeText(getActivity(), "Selected line point: " + value, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "时间："+historyList.get(pointIndex).getTime()+"心率为："+historyList.get(pointIndex).getHeart_rate()+"Selected line point: " + value, Toast.LENGTH_SHORT).show();
         }
 
     }

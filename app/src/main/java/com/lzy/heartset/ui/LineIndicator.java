@@ -64,6 +64,8 @@ public class LineIndicator extends View {
      * 四个提示文字颜色
      */
     private int mAlertColor;
+    private int mLeftAlertColor;
+    private int mRightAlertColor;
     /**
      * Progress
      */
@@ -75,6 +77,8 @@ public class LineIndicator extends View {
     private int mIndicatorTextColor, mIndicatorBackground;
 
     private Paint mAlertTextPaint;
+    private Paint mLeftAlertTextPaint;
+    private Paint mRightAlertTextPaint;
 
     /**
      * View的宽高
@@ -94,6 +98,9 @@ public class LineIndicator extends View {
 
         mAlertSize = getResources().getDimension(R.dimen.line_alert_size);
         mAlertColor = getResources().getColor(R.color.line_alert_color);
+
+        mLeftAlertColor = getResources().getColor(R.color.pressure_low);
+        mRightAlertColor = getResources().getColor(R.color.pressure_high);
 
         mProgressBackground = getResources().getColor(R.color.line_progress_background);
         mProgressColor = getResources().getColor(R.color.line_progress_color);
@@ -115,6 +122,8 @@ public class LineIndicator extends View {
         typedArray.recycle();
 
         mAlertTextPaint = getAlertPaint();
+        mLeftAlertTextPaint = getLeftAlertPaint();
+        mRightAlertTextPaint = getRightAlertPaint();
     }
 
     public void setProgressColor(int mProgressColor) {
@@ -160,16 +169,16 @@ public class LineIndicator extends View {
         // 画左侧文字
         int leftAlertY = ViewUtils.getTextHeight(mAlertTextPaint);
         int leftContentY = mHeight - ViewUtils.getTextBaseLine(mAlertTextPaint);
-        canvas.drawText(mLeftAlert, 0, leftAlertY, mAlertTextPaint);
-        canvas.drawText(mLeftContent, 0, leftContentY, mAlertTextPaint);
+        canvas.drawText(mLeftAlert, 0, leftAlertY, mLeftAlertTextPaint);
+        canvas.drawText(mLeftContent, 0, leftContentY, mLeftAlertTextPaint);
 
         // 画右侧文字
         int rightAlertX = mWidth - ViewUtils.getTextWidth(mAlertTextPaint, mRightAlert);
         int rightContentX = mWidth - ViewUtils.getTextWidth(mAlertTextPaint, mRightContent);
         int rightAlertY = leftAlertY;
         int rightContentY = leftContentY;
-        canvas.drawText(mRightAlert, rightAlertX, rightAlertY, mAlertTextPaint);
-        canvas.drawText(mRightContent, rightContentX, rightContentY, mAlertTextPaint);
+        canvas.drawText(mRightAlert, rightAlertX, rightAlertY, mRightAlertTextPaint);
+        canvas.drawText(mRightContent, rightContentX, rightContentY, mRightAlertTextPaint);
     }
 
 
@@ -242,6 +251,22 @@ public class LineIndicator extends View {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(mAlertColor);
+        paint.setTextSize(mAlertSize);
+        return paint;
+    }
+
+    private Paint getLeftAlertPaint() {
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(mLeftAlertColor);
+        paint.setTextSize(mAlertSize);
+        return paint;
+    }
+
+    private Paint getRightAlertPaint() {
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(mRightAlertColor);
         paint.setTextSize(mAlertSize);
         return paint;
     }

@@ -8,15 +8,15 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="#fd5a01">
+        android:background="@color/main">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="压力检测"
-            android:textColor="#ffffff"
-            android:textSize="16dp" />
+            android:textColor="@color/title_white"
+            android:textSize="20sp" />
 
 
     </RelativeLayout>
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:background="#7dcc6e"
+        android:background="@color/title_white"
         app:show_spacing_time="800"
         app:imageViewWidth="35dp"
         app:imageViewHeigth="35dp">

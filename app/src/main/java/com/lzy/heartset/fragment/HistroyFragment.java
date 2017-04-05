@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.lzy.heartset.R;
 import com.lzy.heartset.activity.HistoryActivity;
+import com.lzy.heartset.utils.GlobalData;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -46,6 +47,7 @@ public class HistroyFragment extends Fragment {
                 Intent intent=new Intent(context, HistoryActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("date",date);
+                GlobalData.select_date="2017-02-07";
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

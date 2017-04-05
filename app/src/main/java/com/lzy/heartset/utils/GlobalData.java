@@ -1,23 +1,30 @@
 package com.lzy.heartset.utils;
 
+import com.lzy.heartset.bean.HistoryDataItemBean;
+
+import java.util.List;
+
 /*
  * 该类用于存储关于用户登录信息的全局变量
  * 如 userid，sid
  */
 public class GlobalData {
 
-    private static String userid="2";
-    private static String sid;
-    public static final String URL_HEAD = "http://101.200.89.170";
-    private static String tel;
+    public static String select_date="";
+    public static String userid="2";
+    public static String sid;
+    public static final String URL_HEAD = "http://47.92.80.155";
+    public static String tel;
     // 昵称
-    private static String username;
+    public static String username;
     // 性别
-    private static int sex;
+    public static int sex;
     // 生日
-    private static String birthday;
+    public static String birthday;
     // 邮箱
-    private static String email;
+    public static String email;
+
+    public static List<HistoryDataItemBean> historyDataItemBeanList;
 
     public static String getUserid() {
         return userid;
@@ -79,4 +86,6 @@ public class GlobalData {
     public static void setTel(String tel) {
         GlobalData.tel = tel;
     }
+
+
 }

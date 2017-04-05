@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.lzy.heartset.R;
+import com.lzy.heartset.bean.HistoryDataItemBean;
+import com.lzy.heartset.utils.GlobalData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,8 @@ public class MonthHistoryFragment extends Fragment {
     private boolean hasLabels = false;
     private LineChartData mLineChartData;
     private ColumnChartData mColumnChartData;
+
+    private List<HistoryDataItemBean> mHistoryDataItemList=GlobalData.historyDataItemBeanList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -264,11 +268,13 @@ public class MonthHistoryFragment extends Fragment {
     /**
      * 将日期转化成x坐标
      *
-     * @param day
+     * @param date
      * @return
      */
-    private int calculateX(String day) {
-        int day_int=Integer.parseInt(day);
+    private int calculateX(String date) {
+        String[] date_array=date.split("-");
+
+        int day_int=Integer.parseInt(date_array[2]);
         if (day_int>=0) {
             return calculateX(day_int);
         } else {
@@ -340,15 +346,20 @@ public class MonthHistoryFragment extends Fragment {
         }
 
 
-        listList.get(calculateX("25")).add(78f);
-        listList.get(calculateX("25")).add(100f);
-        listList.get(calculateX("1")).add(72f);
-        listList.get(calculateX("6")).add(75f);
-        listList.get(calculateX("6")).add(50f);
-        listList.get(calculateX("8")).add(76f);
-        listList.get(calculateX("8")).add(100f);
-        listList.get(calculateX("8")).add(60f);
-        listList.get(calculateX("8")).add(64f);
+        for (HistoryDataItemBean item:mHistoryDataItemList)
+        {
+            listList.get(calculateX(item.getDate())).add((float)item.getHeart_rate());
+        }
+
+//        listList.get(calculateX("25")).add(78f);
+//        listList.get(calculateX("25")).add(100f);
+//        listList.get(calculateX("1")).add(72f);
+//        listList.get(calculateX("6")).add(75f);
+//        listList.get(calculateX("6")).add(50f);
+//        listList.get(calculateX("8")).add(76f);
+//        listList.get(calculateX("8")).add(100f);
+//        listList.get(calculateX("8")).add(60f);
+//        listList.get(calculateX("8")).add(64f);
 
 //        for (int i=0;i<hours.length;i++)
 //        Log.e("listList",listList.get(i).size()+"");

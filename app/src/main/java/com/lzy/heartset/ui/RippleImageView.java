@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 
 import com.lzy.heartset.R;
 
-
 /**
  * Description :
  * Author : liujun
@@ -31,7 +30,7 @@ public class RippleImageView extends RelativeLayout {
     /**
      * 三张波纹图片
      */
-    private static final int SIZE = 3;
+    private static final int SIZE = 2;
 
     /**
      * 动画默认循环播放时间
@@ -54,8 +53,6 @@ public class RippleImageView extends RelativeLayout {
      */
     private float imageViewWidth = IMAMGEVIEW_SIZE;
     private float imageViewHeigth = IMAMGEVIEW_SIZE;
-    // ImageView图片的资源Id
-    private int imageResId = 0;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -63,11 +60,11 @@ public class RippleImageView extends RelativeLayout {
             switch (msg.what) {
                 case MSG_WAVE2_ANIMATION:
                     imgs[MSG_WAVE2_ANIMATION].startAnimation(mAnimationSet[MSG_WAVE2_ANIMATION]);
-                    System.out.println("执行了第二个动画集");
+                    System.out.println("执行第二次动画"+System.currentTimeMillis());
                     break;
-                case MSG_WAVE3_ANIMATION:
-                    imgs[MSG_WAVE2_ANIMATION].startAnimation(mAnimationSet[MSG_WAVE3_ANIMATION]);
-                    break;
+//                case MSG_WAVE3_ANIMATION:
+//                    imgs[MSG_WAVE2_ANIMATION].startAnimation(mAnimationSet[MSG_WAVE3_ANIMATION]);
+//                    break;
             }
 
         }
@@ -119,28 +116,13 @@ public class RippleImageView extends RelativeLayout {
             imgs[i] = new ImageView(context);
             imgs[i].setImageResource(R.drawable.kaishiceliang);
             addView(imgs[i], params);
-//            if (i%2==0)
-//            {
-//                imgs[i] = new ImageView(context);
-//                imgs[i].setImageResource(R.drawable.point_empty);
-//                addView(imgs[i], params);
-//            }else
-//            {
-//
-//            }
-
         }
         LayoutParams params_bg = new LayoutParams(dip2px(context, imageViewWidth) + 10, dip2px(context, imageViewHeigth) + 10);
         //添加一个规则
         params_bg.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         /**添加背景图片*/
         img_bg = new ImageView(context);
-        if (imageResId == 0) {
-            img_bg.setImageResource(R.drawable.kaishiceliang);
-
-        } else {
-            img_bg.setImageResource(imageResId);
-        }
+        img_bg.setImageResource(R.drawable.kaishiceliang);
         addView(img_bg, params_bg);
     }
 
@@ -176,9 +158,10 @@ public class RippleImageView extends RelativeLayout {
     /**
      * 开始水波纹动画
      */
-    public void startWaveAnimation()  {
+    public void startWaveAnimation() {
         imgs[0].startAnimation(mAnimationSet[0]);
-        mHandler.sendEmptyMessageDelayed(MSG_WAVE2_ANIMATION, show_spacing_time);
+        System.out.println("执行第一次动画"+System.currentTimeMillis());
+//        mHandler.sendEmptyMessageDelayed(MSG_WAVE2_ANIMATION, show_spacing_time);
 //        mHandler.sendEmptyMessageDelayed(MSG_WAVE3_ANIMATION, show_spacing_time * 2);
     }
 
@@ -205,7 +188,8 @@ public class RippleImageView extends RelativeLayout {
         this.show_spacing_time = show_spacing_time;
     }
 
-    public ImageView getImageView() {
+    public ImageView getImageView()
+    {
         return img_bg;
     }
 

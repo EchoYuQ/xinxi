@@ -15,15 +15,13 @@ import java.util.List;
 public class ResultActivity extends Activity {
 
     CircleIndicator ci1;
-
-
     LineIndicator liProgress;
 
     private int mHeartRate = 0;
     private int mFatigue = 0;
-    int mCircleGreen;
-    int mCircleYellow;
-    int mCircleRed;
+    int mMiddleColor;
+    int mLowColor;
+    int mHighColor;
 
 
     @Override
@@ -31,8 +29,11 @@ public class ResultActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cicle_view);
 
-        UserDataBean userDataBean = (UserDataBean) getIntent().getSerializableExtra("userdatabean");
-        mHeartRate=userDataBean.getHeartrate();
+
+        Bundle bundle=getIntent().getExtras();
+        mHeartRate =  bundle.getInt("heart_rate");
+        mFatigue =  bundle.getInt("pressure");
+
         initColor();
         initView();
         testLineProgress();
@@ -45,9 +46,9 @@ public class ResultActivity extends Activity {
     }
 
     private void initColor() {
-        mCircleGreen = getResources().getColor(R.color.circle_green);
-        mCircleYellow = getResources().getColor(R.color.circle_yellow);
-        mCircleRed = getResources().getColor(R.color.circle_red);
+        mMiddleColor = getResources().getColor(R.color.pressure_middle);
+        mLowColor = getResources().getColor(R.color.pressure_low);
+        mHighColor = getResources().getColor(R.color.pressure_high);
     }
 
 
@@ -57,35 +58,22 @@ public class ResultActivity extends Activity {
         String rightAlert = "快";
         String rightContent = "150";
         if (mHeartRate > 100) {
-            liProgress.setProgressColor(mCircleRed);
-            liProgress.setIndicatorBackground(mCircleRed);
+            liProgress.setProgressColor(mHighColor);
+            liProgress.setIndicatorBackground(mHighColor);
         } else {
             if (mHeartRate > 65) {
-                liProgress.setProgressColor(mCircleGreen);
-                liProgress.setIndicatorBackground(mCircleGreen);
+                liProgress.setProgressColor(mMiddleColor);
+                liProgress.setIndicatorBackground(mMiddleColor);
 
             } else {
-                liProgress.setProgressColor(mCircleYellow);
-                liProgress.setIndicatorBackground(mCircleYellow);
+                liProgress.setProgressColor(mLowColor);
+                liProgress.setIndicatorBackground(mLowColor);
 
             }
         }
         liProgress.setContent(leftAlert, leftContent, rightAlert, rightContent);
-        liProgress.setIndicator(40, 150, mHeartRate, mHeartRate + "BMP");
+        liProgress.setIndicator(40, 150, mHeartRate, mHeartRate + " BMP");
     }
-//
-//    private void testProgress() {
-//        String title = "身体年龄";
-//        String content = "23";
-//        String unit = "岁";
-//        String alert = "显年轻4岁";
-//        cp1.setContent(title, content, unit, alert);
-//        cp1.setIndicatorValue(10f, 60f, 33f, "实际年龄", 29f, 20, 30, 40, 50);
-//        cp2.setContent(title, content, unit, alert);
-//        cp2.setIndicatorValue(10f, 60f, 33f, 29f, 20, 30, 40, 50);
-//        cp3.setContent(title, content, unit, alert);
-//        cp3.setIndicatorValue(10f, 60f, 33f, 29f, 20, 30, 40, 50);
-//    }
 
     private void testIndicator() {
 
@@ -94,40 +82,40 @@ public class ResultActivity extends Activity {
         item1.start = 0;
         item1.end = 30;
         item1.value = "过低";
-        item1.color = mCircleYellow;
+        item1.color = mLowColor;
         dividerIndicator.add(item1);
 
         IndicatorItem item2 = new IndicatorItem();
         item2.start = 30;
         item2.end = 70;
         item2.value = "正常";
-        item2.color = mCircleGreen;
+        item2.color = mMiddleColor;
         dividerIndicator.add(item2);
 
         IndicatorItem item3 = new IndicatorItem();
         item3.start = 70;
         item3.end = 100;
         item3.value = "过高";
-        item3.color = mCircleRed;
+        item3.color = mHighColor;
         dividerIndicator.add(item3);
 
 
-        mFatigue = 50;
         String title = "疲劳度";
         String content = mFatigue + "";
         String unit = "";
         String alert = "愉快的心情";
         if (mFatigue < 30) {
 
-            ci1.setContentColor(mCircleGreen, mCircleGreen);
-            ci1.setmAlertColor(mCircleGreen);
+            ci1.setContentColor(mLowColor, mLowColor);
+            ci1.setmAlertColor(mLowColor);
+
         } else {
             if (mFatigue < 70) {
-                ci1.setContentColor(mCircleYellow, mCircleYellow);
-                ci1.setmAlertColor(mCircleYellow);
+                ci1.setContentColor(mMiddleColor, mMiddleColor);
+                ci1.setmAlertColor(mMiddleColor);
             } else {
-                ci1.setContentColor(mCircleRed, mCircleRed);
-                ci1.setmAlertColor(mCircleRed);
+                ci1.setContentColor(mHighColor, mHighColor);
+                ci1.setmAlertColor(mHighColor);
             }
         }
         ci1.setContent(title, content, unit, alert);
