@@ -259,13 +259,14 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COLLECT_DATA, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Gson gson = new Gson();
-                ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
-                Toast.makeText(getApplication(), responseBean.toString(), Toast.LENGTH_LONG).show();
+                Log.i("Response",s);
+//                Gson gson = new Gson();
+//                ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
+                Toast.makeText(getApplication(), s.toString(), Toast.LENGTH_LONG).show();
                 saveUserInformationToSP();
-                if (responseBean.getCode() == 0) {
-
-                }
+//                if (responseBean.getCode() == 0) {
+//
+//                }
             }
         }, new Response.ErrorListener() {
             @Override

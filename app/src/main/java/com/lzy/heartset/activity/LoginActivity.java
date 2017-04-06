@@ -46,7 +46,7 @@ public class LoginActivity extends Activity {
     LoginInfo loginInfo = new LoginInfo();
 
     // 对端口号和URI的定义
-    private static final String URL_LOGIN = GlobalData.URL_HEAD+":9000/capp/login/normal";
+    private static final String URL_LOGIN = GlobalData.URL_HEAD+":8080/detect3/LoginServlet";
 //    private static final String URL_LOGIN = "http://10.108.224.77:8080/detect3/LoginServlet";
 
     @Override

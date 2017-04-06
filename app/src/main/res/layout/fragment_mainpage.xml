@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="读心"
+                    android:text="功能开发中"
                     android:textColor="@color/text_black"
                     android:textSize="18sp" />
 
@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="读心"
+                    android:text="功能开发中"
                     android:textColor="@color/text_black"
                     android:textSize="18sp" />
 
@@ -197,7 +197,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="title1"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <View
@@ -219,7 +219,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="title1"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -242,7 +242,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="title1"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
     </LinearLayout>

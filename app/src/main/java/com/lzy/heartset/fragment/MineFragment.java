@@ -4,6 +4,7 @@ package com.lzy.heartset.fragment;
  * Created by yuqing on 2017/3/4.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 
 import com.lzy.heartset.R;
 import com.lzy.heartset.activity.LoginActivity;
+import com.lzy.heartset.activity.MainActivity;
 import com.lzy.heartset.activity.MyInformationActivity;
+import com.lzy.heartset.ui.AlphaIndicator;
 import com.lzy.heartset.ui.RoundImageView;
 import com.lzy.heartset.utils.FileUtil;
 import com.lzy.heartset.utils.GlobalData;
@@ -47,6 +50,16 @@ public class MineFragment extends Fragment {
     private boolean mIsLogin;
 
     private Context mContext;
+    private AlphaIndicator alphaIndicator;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) activity;
+            alphaIndicator = (AlphaIndicator) mainActivity.findViewById(R.id.alphaIndicator);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,24 +118,14 @@ public class MineFragment extends Fragment {
                     break;
 
                 case R.id.rl_myinfo:
-                    // 跳转至已完成订单页面
-//                        startActivity(new Intent(getActivity(), MyIndent.class));
+                    // 跳转到修改信息界面
+                    startActivity(new Intent(mContext, MyInformationActivity.class));
+
                     break;
                 case R.id.rl_history:
-                    // 跳转至我的收藏页面
-//                        startActivity(new Intent(getActivity(), ShowCollect.class));
-
+                    // 跳转至历史数据界面
+                    alphaIndicator.setPagerNum(2);
                     break;
-//                case R.id.rl_info:
-                    // 跳转至账号管理界面
-//                    if (mIsLogin == true) {
-//                        startActivity(new Intent(getActivity(),
-//                                UserInfoManage.class));
-//                    } else {
-//                        Toast.makeText(getActivity(), "请先登录", 1).show();
-//                    }
-
-//                    break;
                 case R.id.rl_quit:
                     // 跳转至登录界面
 //                    if (mIsLogin == true) {
@@ -153,7 +156,7 @@ public class MineFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Bitmap photo = FileUtil.readImageFromLocal(mContext, GlobalData.getTel()+"photo.png");
+        Bitmap photo = FileUtil.readImageFromLocal(mContext, GlobalData.getTel() + "photo.png");
         if (photo != null) {
             mIvUimage.setImageBitmap(photo);
         } else {

@@ -552,6 +552,9 @@ public class MeasureActivity extends Activity {
 
                     // 1. 用于用户使用
                     postToServer(MeasureActivity.this);
+
+
+
 //                    Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
 //                    Bundle bundle = new Bundle();
 //                    bundle.putSerializable("userdatabean", userDataBean);
