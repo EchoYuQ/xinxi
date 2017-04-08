@@ -56,7 +56,7 @@ public class MonthHistoryFragment extends Fragment {
     private LineChartData mLineChartData;
     private ColumnChartData mColumnChartData;
 
-    private List<HistoryDataItemBean> mHistoryDataItemList=GlobalData.historyDataItemBeanList;
+    private List<HistoryDataItemBean> mHistoryDataItemList=new ArrayList<>(GlobalData.historyDataItemBeanList);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -346,9 +346,29 @@ public class MonthHistoryFragment extends Fragment {
         }
 
 
+
+
+//        for (HistoryDataItemBean item:mHistoryDataItemList)
+//        {
+//            listList.get(calculateX(item.getDate())).add((float)item.getHeart_rate());
+//        }
+
         for (HistoryDataItemBean item:mHistoryDataItemList)
         {
-            listList.get(calculateX(item.getDate())).add((float)item.getHeart_rate());
+            switch (GlobalData.currenttype)
+            {
+                case HEART_RATE:
+                    listList.get(calculateX(item.getDate())).add((float)item.getHeart_rate());
+                    break;
+                case BLOOD_OXYGEN:
+                    listList.get(calculateX(item.getDate())).add((float)item.getBlood_oxygen());
+                    break;
+                case PRESSURE:
+                    listList.get(calculateX(item.getDate())).add((float)item.getPressure());
+                    break;
+            }
+
+
         }
 
 //        listList.get(calculateX("25")).add(78f);

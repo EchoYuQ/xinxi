@@ -57,4 +57,15 @@ public class HistoryDataItemBean {
     public void setBlood_oxygen(int blood_oxygen) {
         this.blood_oxygen = blood_oxygen;
     }
+
+    @Override
+    public String toString() {
+        return "HistoryDataItemBean{" +
+                "date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", pressure=" + pressure +
+                ", heart_rate=" + heart_rate +
+                ", blood_oxygen=" + blood_oxygen +
+                '}';
+    }
 }

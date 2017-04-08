@@ -51,20 +51,37 @@
 
             android:textSize="14sp" />
 
-        <RadioButton
-            android:id="@+id/rb_year"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_radiobutton"
-            android:button="@null"
-            android:gravity="center"
-            android:text="年"
-            android:textColor="@drawable/color_radiobutton"
 
-            android:textSize="14sp" />
     </RadioGroup>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:id="@+id/id_tv_history_data_type"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="心率"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/id_iv_last"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:background="@drawable/ic_heart_big"
+            android:layout_toLeftOf="@+id/id_tv_history_data_type"/>
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/id_iv_next"
+            android:clickable="true"
+
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_heart_big"
+            android:layout_toRightOf="@+id/id_tv_history_data_type"/>
+    </RelativeLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"

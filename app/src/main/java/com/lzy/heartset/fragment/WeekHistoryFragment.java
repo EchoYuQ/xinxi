@@ -28,6 +28,8 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
+import static com.lzy.heartset.utils.GlobalData.MeasureType;
+
 /**
  * Created by yuqing on 2017/3/16.
  */
@@ -53,7 +55,7 @@ public class WeekHistoryFragment extends Fragment {
 
 
     public static String[] days = new String[7];
-    List<HistoryDataItemBean> historyList = GlobalData.historyDataItemBeanList;
+    List<HistoryDataItemBean> historyList = new ArrayList<>(GlobalData.historyDataItemBeanList);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -351,18 +353,22 @@ public class WeekHistoryFragment extends Fragment {
      * @return
      */
     private int calculateX(String date, String date_now) {
+
+        int res=-1;
         String[] date_array = date.split("-");
         String[] date_now_array = date_now.split("-");
         if (date_array.length > 0) {
-            return calculateX(Integer.parseInt(date_array[0]),
+            res=calculateX(Integer.parseInt(date_array[0]),
                     Integer.parseInt(date_array[1]),
                     Integer.parseInt(date_array[2]),
                     Integer.parseInt(date_now_array[0]),
                     Integer.parseInt(date_now_array[1]),
                     Integer.parseInt(date_now_array[2]));
+            Log.i("calculateX res","date "+ date+"" +res);
+            return res;
         } else {
             Log.e("calculateX()错误", "日期格式不对，应为2017-02-12");
-            return 0;
+            return -1;
 
         }
     }
@@ -426,24 +432,37 @@ public class WeekHistoryFragment extends Fragment {
             listList.add(list);
         }
 
-//        historyList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
-//        historyList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
 
 
         for (HistoryDataItemBean item:historyList)
         {
-            listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getHeart_rate());
+            switch (GlobalData.currenttype)
+            {
+                case HEART_RATE:
+                    listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getHeart_rate());
+                    break;
+                case BLOOD_OXYGEN:
+                    listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getBlood_oxygen());
+                    break;
+                case PRESSURE:
+                    listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getPressure());
+                    break;
+            }
+
+
         }
 
 

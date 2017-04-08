@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.lzy.heartset.R;
+import com.lzy.heartset.bean.HistoryDataItemBean;
+import com.lzy.heartset.utils.GlobalData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,8 @@ public class DayHistoryFragment extends Fragment {
 
     private int numberOfLines = 1;
     private int maxNumberOfLines = 4;
-    private int numberOfPoints = 48;
+    private int numberOfPoints = 24 * 60;
+
 
     float[][] randomNumbersTab = new float[maxNumberOfLines][numberOfPoints];
 
@@ -46,29 +49,70 @@ public class DayHistoryFragment extends Fragment {
     private boolean hasLines = true;
     private boolean isCubic = false;
     private boolean hasLabels = false;
+
+    private String[] minutes = new String[24 * 60];
     private LineChartData mLineChartData;
     private ColumnChartData mColumnChartData;
-
-
-    public final static String[] hours = new String[]{
-            "0:00", "0:30", "1:00", "1:30", "2:00", "2:30", "3:00", "3:30",
-            "4:00", "4:30", "5:00", "5:30", "6:00", "6:30", "7:00", "7:30",
-            "8:00", "8:30", "9:00", "9:30", "10:00", "10:30", "11:00", "11:30",
-            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-            "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-            "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"};
+    List<HistoryDataItemBean> mHistoryDataItemList = new ArrayList<>(GlobalData.historyDataItemBeanList);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_history_day, container, false);
-        mDayChart = (ComboLineColumnChartView) view.findViewById(R.id.chart_history_day);
+        View view = inflater.inflate(R.layout.fragment_history_year, container, false);
+        mDayChart = (ComboLineColumnChartView) view.findViewById(R.id.chart_history_year);
 
         mDayChart.setOnValueTouchListener(new ValueTouchListener());
 
+        generateXText();
         generateXY();
         generateValues();
         generateData();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        mHistoryDataItemList.clear();
+        super.onDestroyView();
+    }
+
+    /**
+     * 将 2:35  20:40等时间转化成x坐标
+     *
+     * @param hour
+     * @param min
+     * @return
+     */
+    private int calculateX(int hour, int min) {
+
+        return hour * 60 + min;
+    }
+
+    /**
+     * 将 2:35  20:40等时间转化成x坐标
+     *
+     * @param time
+     * @return
+     */
+    private int calculateX(String time) {
+        String[] time_array = time.split(":");
+        if (time_array.length > 0) {
+            return calculateX(Integer.parseInt(time_array[0]), Integer.parseInt(time_array[1]));
+        } else {
+            Log.e("calculateX()错误", "时间格式不对，应为10:10:10");
+            return 0;
+
+        }
+
+
+    }
+
+    private void generateXText() {
+
+        for (int i = 0; i < 24 * 60; i++) {
+            String hour = String.valueOf(i / 60);
+            String minute = i % 60 < 10 ? "0" + String.valueOf(i % 60) : String.valueOf(i % 60);
+            minutes[i] = hour + ":" + minute;
+        }
     }
 
     private void generateValues() {
@@ -91,23 +135,117 @@ public class DayHistoryFragment extends Fragment {
 
     }
 
+    /**
+     * 计算出折线图和柱形图的数据集
+     */
+    private void generateXY() {
+
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 50, 65, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
+//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
+
+
+//        int x = calculateX(15, 20);
+//        listList.get(x).add(100f);
+//        int x1 = calculateX(15, 10);
+//        listList.get(x1).add(90f);
+//        int x2 = calculateX(15, 40);
+//        listList.get(x2).add(68f);
+//        int x3 = calculateX("16:30");
+//        listList.get(x3).add(78f);
+//        listList.get(calculateX("16:30")).add(78f);
+//        listList.get(calculateX("12:30")).add(72f);
+//        listList.get(calculateX("16:20")).add(75f);
+//        listList.get(calculateX("16:38")).add(76f);
+
+//        for (int i=0;i<hours.length;i++)
+//        Log.e("listList",listList.get(i).size()+"");
+
+
+        List<Line> lines = new ArrayList<Line>();
+        List<Column> columns = new ArrayList<Column>();
+        for (int i = 0; i < numberOfLines; ++i) {
+
+            List<PointValue> values1 = new ArrayList<>();
+//            List<SubcolumnValue> values2;
+
+            for (HistoryDataItemBean item : mHistoryDataItemList) {
+                System.out.println(item.toString());
+            }
+
+            for (int j = 0; j < mHistoryDataItemList.size(); ++j) {
+                // 平均值放入折线图数据集中
+                String time = mHistoryDataItemList.get(j).getTime();
+                float resY = 0.0f;
+                switch (GlobalData.currenttype) {
+                    case HEART_RATE:
+                        resY = (float) mHistoryDataItemList.get(j).getHeart_rate();
+                        break;
+                    case BLOOD_OXYGEN:
+                        resY = (float) mHistoryDataItemList.get(j).getBlood_oxygen();
+                        break;
+                    case PRESSURE:
+                        resY = (float) mHistoryDataItemList.get(j).getPressure();
+                        break;
+                }
+                Log.i("resY", resY + "");
+                values1.add(new PointValue(calculateX(time), resY));
+
+//                values2 = new ArrayList<SubcolumnValue>();
+//                values2.add(new SubcolumnValue(resY, resY, ChartUtils.COLOR_GREEN));
+//                columns.add(new Column(values2));
+
+
+//                if (listList.get(j).size() > 0) {
+//
+//                    values1.add(new PointValue(j, resY[0]));
+//                }
+
+
+            }
+
+
+
+
+            Line line = new Line(values1);
+            line.setColor(ChartUtils.COLORS[i]);
+            line.setCubic(isCubic);
+            line.setHasLabels(hasLabels);
+            line.setHasLines(hasLines);
+            line.setHasPoints(hasPoints);
+            lines.add(line);
+        }
+
+        mLineChartData = new LineChartData(lines);
+        mColumnChartData = new ColumnChartData(columns);
+
+
+    }
+
     private void generateData() {
-        // Chart looks the best when line data and column data have similar maximum viewports.
+
         data = new ComboLineColumnChartData(mColumnChartData, mLineChartData);
         List<AxisValue> axisValues = new ArrayList<AxisValue>();
         for (int i = 0; i < numberOfPoints; i++) {
-            axisValues.add(new AxisValue(i).setLabel(hours[i]));
+            axisValues.add(new AxisValue(i).setLabel(minutes[i]));
 
         }
-
-
         if (hasAxes) {
             Axis axisX = new Axis(axisValues);
-            axisX.setHasLines(true);
             Axis axisY = new Axis().setHasLines(true);
             if (hasAxesNames) {
-                axisX.setName("时间");
-                axisY.setName("心率");
+                axisX.setName("Axis X");
+                axisY.setName("Axis Y");
             }
             data.setAxisXBottom(axisX);
             data.setAxisYLeft(axisY);
@@ -119,11 +257,6 @@ public class DayHistoryFragment extends Fragment {
         mDayChart.setComboLineColumnChartData(data);
     }
 
-    /**
-     * 生成折线图的数据
-     *
-     * @return
-     */
     private LineChartData generateLineData() {
 
         List<Line> lines = new ArrayList<Line>();
@@ -131,7 +264,7 @@ public class DayHistoryFragment extends Fragment {
 
             List<PointValue> values = new ArrayList<PointValue>();
             for (int j = 0; j < numberOfPoints; ++j) {
-                if (j % 2 == 0) values.add(new PointValue(j, randomNumbersTab[i][j]));
+                values.add(new PointValue(j, randomNumbersTab[i][j]));
             }
 
             Line line = new Line(values);
@@ -150,33 +283,27 @@ public class DayHistoryFragment extends Fragment {
     }
 
     /**
-     * 生成柱状图的数据
-     *
      * @return
      */
     private ColumnChartData generateColumnData() {
-
         int numSubcolumns = 1;
         int numColumns = numberOfPoints;
         // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
         List<Column> columns = new ArrayList<Column>();
         List<SubcolumnValue> values;
         for (int i = 0; i < numColumns; ++i) {
-            float top = 0;
-            float bottom = 0;
-            if (i % 2 == 0) {
 
-                top = (float) Math.random() * 50 + 5;
-                bottom = top - 15;
-            }
             values = new ArrayList<SubcolumnValue>();
-            values.add(new SubcolumnValue(top, bottom, ChartUtils.COLOR_GREEN));
+            for (int j = 0; j < numSubcolumns; ++j) {
+                float top = (float) Math.random() * 50 + 5;
+                float bottom = top - 15;
+                values.add(new SubcolumnValue(top, bottom, ChartUtils.COLOR_GREEN));
+            }
 
             columns.add(new Column(values));
         }
 
         ColumnChartData columnChartData = new ColumnChartData(columns);
-
         return columnChartData;
     }
 
@@ -255,162 +382,13 @@ public class DayHistoryFragment extends Fragment {
 
         @Override
         public void onColumnValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-            Toast.makeText(getActivity(), hours[columnIndex] + "-" + hours[(columnIndex + 1) % hours.length] + "时间段内，您的心率最大值为" + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Selected column: " + value, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
-            Toast.makeText(getActivity(), hours[(int) value.getX()] + "-" + hours[((int) value.getX() + 1) % hours.length] + "时间段内，您的心率平均值为" + value.getY(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() + "心率为：" + mHistoryDataItemList.get(pointIndex).getHeart_rate() + "Selected line point: " + value, Toast.LENGTH_SHORT).show();
         }
 
     }
-
-
-    /**
-     * 将 2:35  20:40等时间转化成x坐标
-     *
-     * @param hour
-     * @param min
-     * @return
-     */
-    private int calculateX(int hour, int min) {
-        int carry = 0;
-        if (0 <= min && min < 30) carry = 0;
-        else if (30 <= min && min < 60) carry = 1;
-        return hour * 2 + carry;
-    }
-
-    /**
-     * 将 2:35  20:40等时间转化成x坐标
-     *
-     * @param time
-     * @return
-     */
-    private int calculateX(String time) {
-        String[] time_array = time.split(":");
-        if (time_array.length > 0) {
-            return calculateX(Integer.parseInt(time_array[0]), Integer.parseInt(time_array[1]));
-        } else {
-            Log.e("calculateX()错误", "时间格式不对，应为10:10:10");
-            return 0;
-
-        }
-
-
-    }
-
-    /**
-     * 将一个时间段区间的Y值list的平均值、最大值、最小值求出
-     *
-     * @param y_list
-     * @return result[0]平均值，result[1]为最大值
-     */
-    float[] calculateY(List<Float> y_list) {
-        float[] result = {0, 0, 0};
-        if (y_list.size() == 0 || y_list == null) return result;
-        float sum = 0;
-        float max = Float.MIN_VALUE;
-        float min = Float.MAX_VALUE;
-        for (int i = 0; i < y_list.size(); i++) {
-            float num = y_list.get(i);
-            sum += num;
-            if (max < num) max = num;
-            if (min > num) min = num;
-        }
-        result[0] = sum / y_list.size();
-        result[1] = max;
-        result[2] = min;
-        return result;
-
-    }
-
-    /**
-     * 将一个时间段区间的Y值数组的平均值、最大值、最小值求出
-     *
-     * @param y_array
-     * @return result[0]平均值，result[1]为最大值
-     */
-    float[] calculateY(float[] y_array) {
-        float[] result = {0, 0, 0};
-        float sum = 0;
-        float max = Float.MIN_VALUE;
-        float min = Float.MAX_VALUE;
-        for (int i = 0; i < y_array.length; i++) {
-            float num = y_array[i];
-            sum += num;
-            if (max < num) max = num;
-            if (min > num) min = num;
-        }
-        result[0] = sum / y_array.length;
-        result[1] = max;
-        result[2] = min;
-        return result;
-
-    }
-
-    /**
-     * 计算出折线图和柱形图的数据集
-     */
-    private void generateXY() {
-        List<List<Float>> listList = new ArrayList<>();
-        for (int i = 0; i < hours.length; i++) {
-            List<Float> list = new ArrayList<>();
-            listList.add(list);
-        }
-
-
-        int x = calculateX(15, 20);
-        listList.get(x).add(100f);
-        int x1 = calculateX(15, 10);
-        listList.get(x1).add(90f);
-        int x2 = calculateX(15, 40);
-        listList.get(x2).add(68f);
-        int x3 = calculateX("16:30");
-        listList.get(x3).add(78f);
-        listList.get(calculateX("16:30")).add(78f);
-        listList.get(calculateX("12:30")).add(72f);
-        listList.get(calculateX("16:20")).add(75f);
-        listList.get(calculateX("16:38")).add(76f);
-
-//        for (int i=0;i<hours.length;i++)
-//        Log.e("listList",listList.get(i).size()+"");
-
-
-        List<Line> lines = new ArrayList<Line>();
-        List<Column> columns = new ArrayList<Column>();
-        for (int i = 0; i < numberOfLines; ++i) {
-
-            List<PointValue> values1 = new ArrayList<PointValue>();
-            List<SubcolumnValue> values2;
-
-            for (int j = 0; j < numberOfPoints; ++j) {
-//                if (j % 2 == 0) values.add(new PointValue(j, randomNumbersTab[i][j]));
-                // 平均值放入折线图数据集中
-                float[] resY = calculateY(listList.get(j));
-                if (listList.get(j).size() > 0) {
-
-                    values1.add(new PointValue(j, resY[0]));
-                }
-
-                values2 = new ArrayList<SubcolumnValue>();
-                Log.e("resY", resY[0] + " " + resY[1] + " " + resY[2]);
-                values2.add(new SubcolumnValue(resY[1], resY[2], ChartUtils.COLOR_GREEN));
-                columns.add(new Column(values2));
-            }
-
-            Line line = new Line(values1);
-            line.setColor(ChartUtils.COLORS[i]);
-            line.setCubic(isCubic);
-            line.setHasLabels(hasLabels);
-            line.setHasLines(hasLines);
-            line.setHasPoints(hasPoints);
-            lines.add(line);
-        }
-
-        mLineChartData = new LineChartData(lines);
-        mColumnChartData = new ColumnChartData(columns);
-
-
-    }
-
 }

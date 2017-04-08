@@ -2,6 +2,7 @@ package com.lzy.heartset.utils;
 
 import com.lzy.heartset.bean.HistoryDataItemBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -24,7 +25,17 @@ public class GlobalData {
     // 邮箱
     public static String email;
 
-    public static List<HistoryDataItemBean> historyDataItemBeanList;
+    public static enum MeasureType {HEART_RATE, BLOOD_OXYGEN, PRESSURE}
+
+    public static final MeasureType[] measuretypes =
+
+            {
+                    MeasureType.HEART_RATE, MeasureType.BLOOD_OXYGEN, MeasureType.PRESSURE
+            };
+
+    public static MeasureType currenttype=MeasureType.HEART_RATE;
+
+    public static List<HistoryDataItemBean> historyDataItemBeanList=new ArrayList<>();
 
     public static String getUserid() {
         return userid;
