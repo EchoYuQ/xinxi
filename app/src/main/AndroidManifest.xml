@@ -54,7 +54,8 @@
 
         </activity>
 
-        <activity android:name=".activity.LogoActivity"  >
+        <activity android:name=".activity.LogoActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
