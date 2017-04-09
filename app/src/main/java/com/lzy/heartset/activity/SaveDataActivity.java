@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class SaveDataActivity extends Activity implements View.OnClickListener {
 
-    private static final String URL_COLLECT_DATA = GlobalData.URL_HEAD+":8080/detect3/CollectServlet";
+    private static final String URL_COLLECT_DATA = GlobalData.URL_HEAD + ":8080/detect3/CollectServlet";
     private EditText et_mUserName;
     private EditText et_mAge;
     private RadioGroup rg_mSex;
@@ -259,19 +259,23 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COLLECT_DATA, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Log.i("Response",s);
-//                Gson gson = new Gson();
-//                ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
-                Toast.makeText(getApplication(), s.toString(), Toast.LENGTH_LONG).show();
+                Log.i("Response", s);
+                Gson gson = new Gson();
+                ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
                 saveUserInformationToSP();
-//                if (responseBean.getCode() == 0) {
-//
-//                }
+                if (responseBean.getCode() == 0) {
+
+                    Toast.makeText(getApplication(), "上传成功", Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplication(), responseBean.getMsg(), Toast.LENGTH_LONG).show();
+
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
+                Toast.makeText(getApplication(), "连接服务器失败", Toast.LENGTH_LONG).show();
             }
         }) {
             @Override

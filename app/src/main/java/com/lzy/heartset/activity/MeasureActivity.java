@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -182,6 +183,11 @@ public class MeasureActivity extends Activity {
         initView();
         initConfig();
         super.onCreate(savedInstanceState);
+
+        //透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明导航栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
     }
 
     private void initView() {
@@ -551,7 +557,7 @@ public class MeasureActivity extends Activity {
                     mMeasureData.setData(float_list);
 
                     // 1. 用于用户使用
-                    postToServer(MeasureActivity.this);
+//                    postToServer(MeasureActivity.this);
 
 
 
@@ -562,11 +568,11 @@ public class MeasureActivity extends Activity {
 //                    startActivity(intent);
 
                     // 2. 用于收集数据使用
-//                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("measure_data", mMeasureData);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
+                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("measure_data", mMeasureData);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
                     finish();
 

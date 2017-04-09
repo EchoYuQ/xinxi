@@ -15,12 +15,12 @@ public class DPBaseTheme extends DPTheme {
 
     @Override
     public int colorBGCircle() {
-        return 0x44000000;
+        return 0x4455c364;
     }
 
     @Override
     public int colorTitleBG() {
-        return 0xFFF37B7A;
+        return 0xff55c364;
     }
 
     @Override
@@ -30,12 +30,13 @@ public class DPBaseTheme extends DPTheme {
 
     @Override
     public int colorToday() {
-        return 0x88F37B7A;
+        return 0xff55c364;
     }
 
+    // 非假期的日期的颜色
     @Override
     public int colorG() {
-        return 0xEE333333;
+        return 0xFFB3B3B3;
     }
 
     @Override

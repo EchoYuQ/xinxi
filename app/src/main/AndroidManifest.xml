@@ -54,7 +54,7 @@
 
         </activity>
 
-        <activity android:name=".activity.LogoActivity">
+        <activity android:name=".activity.LogoActivity"  >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

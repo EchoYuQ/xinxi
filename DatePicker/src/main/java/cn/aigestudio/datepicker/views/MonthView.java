@@ -225,7 +225,8 @@ public class MonthView extends View {
         int cellH5 = (int) (h / 5F);
         int cellH6 = (int) (h / 6F);
 
-        circleRadius = cellW;
+        // 背景圆圈的大小
+        circleRadius = (int)((float)cellW/1.4f);
 
         animZoomOut1 = (int) (cellW * 1.2F);
         animZoomIn1 = (int) (cellW * 0.8F);
@@ -276,6 +277,7 @@ public class MonthView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(mTManager.colorBG());
+//        canvas.drawColor(DPTManager.GREEN);
 
         draw(canvas, width * indexMonth, (indexYear - 1) * height, topYear, topMonth);
         draw(canvas, width * (indexMonth - 1), height * indexYear, leftYear, leftMonth);

@@ -1,5 +1,7 @@
 package cn.aigestudio.datepicker.bizs.themes;
 
+import android.graphics.Color;
+
 /**
  * 日历主题管理器
  * 在DatePicker被实例化前调用{@link #initCalendar(DPTheme)}方法来初始化一个日历主题对象
@@ -13,6 +15,8 @@ public final class DPTManager {
     private static DPTManager sManager;
 
     private DPTheme theme;// 主题对象
+
+    public static int GREEN= Color.parseColor("#55c364");
 
     private DPTManager() {
         initCalendar(new DPCNTheme());

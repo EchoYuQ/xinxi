@@ -1,6 +1,7 @@
 package cn.aigestudio.datepicker.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -67,18 +68,11 @@ public class DatePicker extends LinearLayout {
 
         // 标题栏根布局
         RelativeLayout rlTitle = new RelativeLayout(context);
-        rlTitle.setBackgroundColor(mTManager.colorTitleBG());
+//        rlTitle.setBackgroundColor(mTManager.colorTitleBG());
+        rlTitle.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+
         int rlTitlePadding = MeasureUtil.dp2px(context, 10);
         rlTitle.setPadding(rlTitlePadding, rlTitlePadding, rlTitlePadding, rlTitlePadding);
-
-        // 周视图根布局
-        LinearLayout llWeek = new LinearLayout(context);
-        llWeek.setBackgroundColor(mTManager.colorTitleBG());
-        llWeek.setOrientation(HORIZONTAL);
-        int llWeekPadding = MeasureUtil.dp2px(context, 5);
-        llWeek.setPadding(0, llWeekPadding, 0, llWeekPadding);
-        LayoutParams lpWeek = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        lpWeek.weight = 1;
 
         // 标题栏子元素布局参数
         RelativeLayout.LayoutParams lpYear =
@@ -86,24 +80,41 @@ public class DatePicker extends LinearLayout {
         lpYear.addRule(RelativeLayout.CENTER_VERTICAL);
         RelativeLayout.LayoutParams lpMonth =
                 new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        lpMonth.addRule(RelativeLayout.CENTER_IN_PARENT);
+//        lpMonth.addRule(RelativeLayout.RIGHT_OF,tvYear);
+        lpMonth.setMargins(MeasureUtil.dp2px(context, 50),0,0,0);
         RelativeLayout.LayoutParams lpEnsure =
                 new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lpEnsure.addRule(RelativeLayout.CENTER_VERTICAL);
         lpEnsure.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+        // 周视图根布局
+        LinearLayout llWeek = new LinearLayout(context);
+//        llWeek.setBackgroundColor(mTManager.colorTitleBG());
+        llWeek.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        llWeek.setOrientation(HORIZONTAL);
+        int llWeekPadding = MeasureUtil.dp2px(context, 5);
+        llWeek.setPadding(0, llWeekPadding, 0, llWeekPadding);
+        LayoutParams lpWeek = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        lpWeek.weight = 1;
+
+
 
         // --------------------------------------------------------------------------------标题栏
         // 年份显示
         tvYear = new TextView(context);
         tvYear.setText("2015");
         tvYear.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        tvYear.setTextColor(mTManager.colorTitle());
+//        tvYear.setTextColor(mTManager.colorTitle());
+        tvYear.setTextColor(Color.parseColor("#666666")); // 灰色
 
         // 月份显示
         tvMonth = new TextView(context);
         tvMonth.setText("六月");
-        tvMonth.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        tvMonth.setTextColor(mTManager.colorTitle());
+        tvMonth.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+
+        tvMonth.setTextColor(Color.parseColor("#55c364")); // 绿色
+
+
 
         // 确定显示
         tvEnsure = new TextView(context);
@@ -131,7 +142,8 @@ public class DatePicker extends LinearLayout {
             tvWeek.setText(mLManager.titleWeek()[i]);
             tvWeek.setGravity(Gravity.CENTER);
             tvWeek.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-            tvWeek.setTextColor(mTManager.colorTitle());
+//            tvWeek.setTextColor(mTManager.colorTitle());
+            tvWeek.setTextColor(getResources().getColor(android.R.color.black));
             llWeek.addView(tvWeek, lpWeek);
         }
         addView(llWeek, llParams);
@@ -247,4 +259,6 @@ public class DatePicker extends LinearLayout {
         }
         return super.dispatchTouchEvent(ev);
     }
+
+
 }
