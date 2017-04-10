@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -40,7 +45,7 @@ import java.util.Map;
  * Created by yuqing on 2017/3/15.
  */
 public class HistoryActivity extends Activity implements View.OnClickListener {
-
+    // 端口号为8080
     private static final String URL_HISTORY = GlobalData.URL_HEAD + ":9000/detect3/HistoryServlet";
     // 临时测试用
     RadioGroup mRadioGroup;
@@ -83,6 +88,10 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_history);
         super.onCreate(savedInstanceState);
+
+
+
+
         mManager = getFragmentManager();
         // 开启Fragment事务
         mTransaction = mManager.beginTransaction();
@@ -160,6 +169,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         String[] pressure_suggestions = {"心理压力低", "心理压力中等", "心理压力高"};
         String[] blood_oxygten_suggestions = {"血氧含量低", "血氧含量中等", "血压含量高"};
         String[] heartrate_suggestions = {"心率慢", "心率正常", "心率快"};
+        String[] colors = {"#55c364","#d970a975","#d9a67260"};
         Log.i("HistoryList size", mHistoryDataItemList.size() + "");
         for (int i = 0; i < mHistoryDataItemList.size(); i++) {
             HistoryDataItemBean item = mHistoryDataItemList.get(i);
@@ -176,11 +186,13 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
                     if (heartrate < 60) {
                         map.put("suggestion", heartrate_suggestions[0]);
+                        map.put("color", colors[0]);
                     } else if (heartrate < 90) {
                         map.put("suggestion", heartrate_suggestions[1]);
-
+                        map.put("color", colors[1]);
                     } else {
                         map.put("suggestion", heartrate_suggestions[2]);
+                        map.put("color", colors[2]);
                     }
                     break;
                 case BLOOD_OXYGEN:
@@ -188,29 +200,34 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                     map.put("value", bloodoxygen);
                     if (bloodoxygen < 93) {
                         map.put("suggestion", blood_oxygten_suggestions[0]);
+                        map.put("color", colors[0]);
                     } else if (bloodoxygen < 98) {
                         map.put("suggestion", blood_oxygten_suggestions[1]);
-
+                        map.put("color", colors[1]);
                     } else {
                         map.put("suggestion", blood_oxygten_suggestions[2]);
+                        map.put("color", colors[2]);
                     }
                     break;
                 case PRESSURE:
                     int pressure = item.getPressure();
                     map.put("value", pressure);
-                    if (pressure < 93) {
+                    if (pressure < 30) {
                         map.put("suggestion", pressure_suggestions[0]);
-                    } else if (pressure < 98) {
+                        map.put("color", colors[0]);
+                    } else if (pressure < 70) {
                         map.put("suggestion", pressure_suggestions[1]);
-
+                        map.put("color", colors[1]);
                     } else {
                         map.put("suggestion", pressure_suggestions[2]);
+                        map.put("color", colors[2]);
                     }
                     break;
 
             }
             list.add(map);
         }
+        System.out.println(list);
         return list;
     }
 
@@ -268,9 +285,10 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                                     break;
 
                             }
-                            SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
-                                    new String[]{"image", "day", "time", "value", "suggestion"},
-                                    new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+//                            SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
+//                                    new String[]{"image", "day", "time", "value", "suggestion"},
+//                                    new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+                            MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
                             mListView.setAdapter(adapter);
                             transaction.commit();
                         }
@@ -374,9 +392,11 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
 
                 Log.i(" size", mHistoryDataItemList.size() + "");
-                SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
-                        new String[]{"image", "day", "time", "value", "suggestion"},
-                        new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+//                SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
+//                        new String[]{"image", "day", "time", "value", "suggestion"},
+//                        new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+                MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
+
                 mListView.setAdapter(adapter);
                 transaction.commit();
             }
@@ -419,9 +439,10 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         // 更新TextView
         mTvDataType.setText(mDataTypeTexts[mIndex]);
         // 更新ListView
-        SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
-                new String[]{"image", "day", "time", "value", "suggestion"},
-                new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+//        SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
+//                new String[]{"image", "day", "time", "value", "suggestion"},
+//                new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+        MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
         mListView.setAdapter(adapter);
 
         // 更新Fragment
@@ -451,4 +472,76 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
         System.out.println("点击了下一个");
     }
+
+
+}
+
+class MyAdapter extends BaseAdapter {
+    // 在外面先定义，ViewHolder静态类
+    static class ViewHolder {
+        public ImageView img;
+        public TextView tv_time;
+        public TextView tv_date;
+        public TextView tv_number;
+        public TextView tv_text;
+    }
+
+    private Context context;
+    private LayoutInflater mInflater;
+    private List<Map<String, Object>> mList;
+
+    public MyAdapter(Context context, List<Map<String, Object>> list) {
+        this.context = context;
+        mInflater = LayoutInflater.from(context);
+        mList = new ArrayList<>(list);
+    }
+
+    @Override
+    public int getCount() {
+        // How many items are in the data set represented by this Adapter.(在此适配器中所代表的数据集中的条目数)
+        return mList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        // Get the data item associated with the specified position in the data set.(获取数据集中与指定索引对应的数据项)
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        // Get the row id associated with the specified position in the list.(取在列表中与指定索引对应的行id)
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Get a View that displays the data at the specified position in the data set.
+
+        ViewHolder holder;
+        if (convertView == null) {
+            holder = new ViewHolder();
+            convertView = mInflater.inflate(R.layout.list_item1, parent, false);
+            holder.img = (ImageView) convertView.findViewById(R.id.item_iv_image);
+            holder.tv_date = (TextView) convertView.findViewById(R.id.item_tv_day);
+            holder.tv_time = (TextView) convertView.findViewById(R.id.item_tv_time);
+            holder.tv_number = (TextView) convertView.findViewById(R.id.item_tv_value);
+            holder.tv_text = (TextView) convertView.findViewById(R.id.item_tv_suggetion);
+            convertView.setTag(holder);
+        } else {
+            // new String[]{"image", "day", "time", "value", "suggestion"},
+
+            holder = (ViewHolder) convertView.getTag();
+        }
+            Map<String, Object> map = mList.get(position);
+            holder.img.setImageResource((int) map.get("image"));
+            holder.tv_date.setText(map.get("day").toString());
+            holder.tv_time.setText(map.get("time").toString());
+            holder.tv_number.setText(map.get("value").toString());
+            holder.tv_number.setTextColor(Color.parseColor(map.get("color").toString()));
+            holder.tv_text.setText(map.get("suggestion").toString());
+            holder.tv_text.setTextColor(Color.parseColor(map.get("color").toString()));
+        return convertView;
+    }
+
 }

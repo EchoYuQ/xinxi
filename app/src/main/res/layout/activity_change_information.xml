@@ -21,7 +21,7 @@
         <ImageView
             android:id="@+id/id_iv_back"
             android:layout_width="15dp"
-            android:layout_height="20dp"
+            android:layout_height="15dp"
             android:background="@drawable/ic_back"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"/>
@@ -31,14 +31,13 @@
             android:textSize="22sp"
             android:textColor="@color/normal_white"
             android:layout_centerInParent="true"
-            android:textStyle="bold"
             android:text="修改资料"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/id_tv_save"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textColor="@color/normal_white"
             android:layout_gravity="right"
             android:text="保存"

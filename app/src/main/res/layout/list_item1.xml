@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="2015-03-05"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/item_tv_time"
@@ -36,7 +36,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="13:11:20"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
     </LinearLayout>
 
@@ -44,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/item_tv_value"
-        android:textSize="24sp"
+        android:textSize="23sp"
         android:text="50"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="15dp"
@@ -55,7 +55,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/item_tv_suggetion"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:text="心率正常"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="35dp"

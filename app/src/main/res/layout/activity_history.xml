@@ -8,7 +8,6 @@
         android:id="@+id/rg_choose"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
@@ -23,7 +22,7 @@
             android:gravity="center"
             android:text="日"
             android:textColor="@drawable/color_radiobutton"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb_week"
@@ -36,7 +35,7 @@
             android:text="周"
             android:textColor="@drawable/color_radiobutton"
 
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/rb_month"
@@ -49,49 +48,64 @@
             android:text="月"
             android:textColor="@drawable/color_radiobutton"
 
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
 
     </RadioGroup>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
         <TextView
+            android:id="@+id/id_tv_history_data_type"
             android:layout_width="100dp"
             android:layout_height="30dp"
-            android:id="@+id/id_tv_history_data_type"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="心率"/>
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:id="@+id/id_iv_last"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:background="@drawable/ic_heart_big"
-            android:layout_toLeftOf="@+id/id_tv_history_data_type"/>
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:id="@+id/id_iv_next"
-            android:clickable="true"
+            android:text="心率"
+            android:textColor="@color/history_measure_type_text"
+            android:textSize="16sp" />
 
+        <ImageView
+            android:id="@+id/id_iv_last"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_heart_big"
-            android:layout_toRightOf="@+id/id_tv_history_data_type"/>
+            android:layout_toLeftOf="@+id/id_tv_history_data_type"
+            android:background="@drawable/type_back"
+            android:clickable="true" />
+
+        <ImageView
+            android:id="@+id/id_iv_next"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_centerVertical="true"
+
+            android:layout_toRightOf="@+id/id_tv_history_data_type"
+            android:background="@drawable/type_next"
+            android:clickable="true" />
     </RelativeLayout>
+
     <FrameLayout
+        android:id="@+id/fl_history"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:id="@+id/fl_history">
+        android:layout_marginTop="5dp">
 
     </FrameLayout>
-    <ListView
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lv_history">
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/line" />
+
+    <ListView
+        android:id="@+id/lv_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     </ListView>
 </LinearLayout>

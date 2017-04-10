@@ -20,7 +20,7 @@
         <ImageView
             android:id="@+id/id_iv_back_news"
             android:layout_width="15dp"
-            android:layout_height="20dp"
+            android:layout_height="15dp"
             android:layout_centerVertical="true"
             android:scaleType="fitXY"
             android:layout_marginLeft="20dp"
