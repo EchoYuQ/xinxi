@@ -68,8 +68,12 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
     private int mTimeType;
 
 
-    private int mDrawables[] = {R.drawable.user_appoint, R.drawable.heart_icon, R.drawable.icon_main};
+    private int mDrawables[] = {R.drawable.heartrate_icon, R.drawable.bloodoxygen_icon, R.drawable.pressure_icon};
     private String mDataTypeTexts[] = {"心率", "血氧", "心理压力"};
+    String[] pressure_suggestions = {"心理压力低", "心理压力中等", "心理压力高"};
+    String[] blood_oxygten_suggestions = {"血氧含量低", "血氧含量中等", "血压含量高"};
+    String[] heartrate_suggestions = {"心率慢", "心率正常", "心率快"};
+    String[] colors = {"#d948637f","#d970a975","#d9a67260"};
     private int mIndex = 0;
 
 
@@ -166,10 +170,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-        String[] pressure_suggestions = {"心理压力低", "心理压力中等", "心理压力高"};
-        String[] blood_oxygten_suggestions = {"血氧含量低", "血氧含量中等", "血压含量高"};
-        String[] heartrate_suggestions = {"心率慢", "心率正常", "心率快"};
-        String[] colors = {"#55c364","#d970a975","#d9a67260"};
+
         Log.i("HistoryList size", mHistoryDataItemList.size() + "");
         for (int i = 0; i < mHistoryDataItemList.size(); i++) {
             HistoryDataItemBean item = mHistoryDataItemList.get(i);

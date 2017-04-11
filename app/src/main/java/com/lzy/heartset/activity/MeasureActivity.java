@@ -1,13 +1,53 @@
 package com.lzy.heartset.activity;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.chart.PointStyle;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.lzy.heartset.R;
+import com.lzy.heartset.bean.MeasureData;
+import com.lzy.heartset.bean.ResponseBean;
+import com.lzy.heartset.bean.UserDataBean;
+import com.lzy.heartset.sg.SGFilter;
+import com.lzy.heartset.ui.MySurfaceView;
+import com.lzy.heartset.ui.ProgressWheel;
+import com.lzy.heartset.ui.TwinkleDrawable;
+import com.lzy.heartset.utils.CalculateHeartRate;
+import com.lzy.heartset.utils.GlobalData;
+import com.lzy.heartset.utils.ImageProcessing;
+import com.lzy.heartset.utils.TimeUtil;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,54 +63,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.lzy.heartset.R;
-import com.lzy.heartset.bean.MeasureData;
-import com.lzy.heartset.bean.ResponseBean;
-import com.lzy.heartset.bean.UserDataBean;
-import com.lzy.heartset.sg.SGFilter;
-import com.lzy.heartset.utils.CalculateHeartRate;
-import com.lzy.heartset.utils.GlobalData;
-import com.lzy.heartset.utils.ImageProcessing;
-import com.lzy.heartset.ui.MySurfaceView;
-import com.lzy.heartset.ui.ProgressWheel;
-import com.lzy.heartset.ui.TwinkleDrawable;
-import com.lzy.heartset.utils.TimeUtil;
-
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * 程序的主入口
  *
  * @author liuyazhuang
  */
 public class MeasureActivity extends Activity {
-    private static final String URL_MEASURE = GlobalData.URL_HEAD+":8080/detect3/TransServlet";
+    private static final String URL_MEASURE = GlobalData.URL_HEAD + ":8080/detect3/TransServlet";
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 123;
     //曲线
     private Timer timer;
     //Timer任务，与Timer配套使用
@@ -104,7 +104,6 @@ public class MeasureActivity extends Activity {
     // 用于计算实时心率的数据
     List<Double> mRealTimeDatas = new ArrayList<Double>();
 
-
     int[] xv = new int[AXISXMAX];
     double[] yv = new double[AXISXMAX];
 
@@ -129,7 +128,6 @@ public class MeasureActivity extends Activity {
     // 最外圈的圆形进度条
     private ProgressWheel m_ProgressWheel;
 
-
     private static int averageIndex = 0;
     private static final int averageArraySize = 4;
     private static final int[] averageArray = new int[averageArraySize];
@@ -141,7 +139,6 @@ public class MeasureActivity extends Activity {
     private static final double AXISYMIN = 4;
     private static final int AXISXMAX = 6000 / INTERVAL;
 
-
     private UserDataBean mUserDataBean = new UserDataBean();
     private List<Double> mDatas = new ArrayList<Double>();
     private List<Double> mRedDatas = new ArrayList<Double>();
@@ -150,11 +147,12 @@ public class MeasureActivity extends Activity {
     private int count;
     private double currentYtop = AXISYMAX;
     private double currentYbottom = AXISYMIN;
+    // 实时心率
     private int mRealTimeHeartRate = 0;
+    // 最后的静态处理心率
     private int mHeartRate;
 
     private boolean mIsHeartRateCanSet = true;
-
 
     /**
      * 类型枚举
@@ -163,7 +161,6 @@ public class MeasureActivity extends Activity {
         GREEN, RED
     }
 
-
     //设置默认类型
     private static TYPE currentType = TYPE.GREEN;
 
@@ -171,7 +168,6 @@ public class MeasureActivity extends Activity {
     public static TYPE getCurrent() {
         return currentType;
     }
-
 
     //开始时间
     private static long startTime = 0;
@@ -199,9 +195,11 @@ public class MeasureActivity extends Activity {
         m_HeartDrawable.addDrawable(getResources().getDrawable(R.drawable.ic_heart_small), false);
 
         m_ProgressWheel = (ProgressWheel) findViewById(R.id.pw_heartrate);
-        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
+        // 用户使用
+        //        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
+        // 收集数据使用
+        m_ProgressWheel.setMax(4 * AXISXMAX - 10);
     }
-
 
     private void calRealTimeHeartRate() {
         int size = mRealTimeDatas.size();
@@ -217,10 +215,9 @@ public class MeasureActivity extends Activity {
         // SG算法去噪处理第二遍
         realtime_data_smoothed = new SGFilter(3, 3).smooth(realtime_data_smoothed, coeffs);
 
-
         List<Double> realtime_data_smoothed_list = new ArrayList<Double>();
         // 去头去尾
-        for (int i = 5; i < realtime_data_smoothed.length - 5; i++) {
+        for (int i = 20; i < realtime_data_smoothed.length - 10; i++) {
             realtime_data_smoothed_list.add(realtime_data_smoothed[i]);
         }
         System.out.println("实时心率去噪数据");
@@ -235,6 +232,11 @@ public class MeasureActivity extends Activity {
 
     @Override
     protected void onStart() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            boolean res = checkPermissions();
+//            Log.i("相机权限", res+"");
+        }
+
         count = 0;
         handler = null;
         mDatas.clear();
@@ -245,13 +247,12 @@ public class MeasureActivity extends Activity {
         timer = null;
         task = null;
         m_ProgressWheel.setProgress(0);
-//        mIsHeartRateCanSet=true;
+        //        mIsHeartRateCanSet=true;
 
         initTimer();
         Log.i("onStart", "onStart()");
         super.onStart();
     }
-
 
     @Override
     protected void onStop() {
@@ -283,7 +284,6 @@ public class MeasureActivity extends Activity {
         PointStyle style = PointStyle.CIRCLE;
         renderer = buildRenderer(color, style, true);
 
-
         //设置好图表的样式
         setChartSettings(renderer, "X", "Y", 0, AXISXMAX, AXISYMIN, AXISYMAX, Color.WHITE, Color.WHITE);
 
@@ -299,7 +299,7 @@ public class MeasureActivity extends Activity {
         preview = (MySurfaceView) findViewById(R.id.preview);
         previewHolder = preview.getHolder();
         previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-//        previewHolder.addCallback(preview);
+        //        previewHolder.addCallback(preview);
         previewHolder.addCallback(surfaceCallback);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -315,12 +315,13 @@ public class MeasureActivity extends Activity {
                 @Override
                 public void handleMessage(Message msg) {
                     // 刷新图表
-                    if (msg.what == 1) updateChart();
+                    if (msg.what == 1) {
+                        updateChart();
+                    }
                     super.handleMessage(msg);
                 }
             };
         }
-
 
         task = new TimerTask() {
             @Override
@@ -346,13 +347,13 @@ public class MeasureActivity extends Activity {
         super.onDestroy();
     }
 
-
     /**
      * 创建图表
      *
      * @param color
      * @param style
      * @param fill
+     *
      * @return
      */
     protected XYMultipleSeriesRenderer buildRenderer(int color, PointStyle style, boolean fill) {
@@ -361,8 +362,8 @@ public class MeasureActivity extends Activity {
         //设置图表中曲线本身的样式，包括颜色、点的大小以及线的粗细等
         XYSeriesRenderer r = new XYSeriesRenderer();
         r.setColor(color);
-//		r.setPointStyle(null);
-//		r.setFillPoints(fill);
+        //		r.setPointStyle(null);
+        //		r.setFillPoints(fill);
         r.setLineWidth(10f);
         renderer.addSeriesRenderer(r);
         return renderer;
@@ -382,44 +383,43 @@ public class MeasureActivity extends Activity {
      * @param labelsColor：标签
      */
     protected void setChartSettings(XYMultipleSeriesRenderer renderer, String xTitle, String yTitle,
-                                    double xMin, double xMax, double yMin, double yMax, int axesColor, int labelsColor) {
+                                    double xMin, double xMax, double yMin, double yMax, int axesColor,
+                                    int labelsColor) {
         //有关对图表的渲染可参看api文档
-//        renderer.setChartTitle(title);
-//        renderer.setXTitle(xTitle);
-//        renderer.setYTitle(yTitle);
+        //        renderer.setChartTitle(title);
+        //        renderer.setXTitle(xTitle);
+        //        renderer.setYTitle(yTitle);
         renderer.setXAxisMin(xMin);
         renderer.setXAxisMax(xMax);
         renderer.setYAxisMin(yMin);
         renderer.setYAxisMax(yMax);
-//        renderer.setAxesColor(axesColor);
-//        renderer.setLabelsColor(labelsColor);
+        //        renderer.setAxesColor(axesColor);
+        //        renderer.setLabelsColor(labelsColor);
         renderer.setShowGrid(false);
-//        renderer.setXLabels(20);
-//        renderer.setYLabelsAlign(Align.RIGHT);
+        //        renderer.setXLabels(20);
+        //        renderer.setYLabelsAlign(Align.RIGHT);
         renderer.setPointSize((float) 8);
         renderer.setShowLegend(false);
         renderer.setClickEnabled(false);
         renderer.setShowAxes(false);
         renderer.setShowLabels(false);
-        renderer.setMargins(new int[]{0, 0, 0, 0});
-//        renderer.setPanEnabled(false, false);
-//        renderer.setZoomEnabled(false, false);
+        renderer.setMargins(new int[] {0, 0, 0, 0});
+        //        renderer.setPanEnabled(false, false);
+        //        renderer.setZoomEnabled(false, false);
         Log.i("clickable", renderer.isClickEnabled() + "");
         Log.i("panable", renderer.isPanEnabled() + "");
         Log.i("zoomable", renderer.isZoomEnabled() + "");
 
     }
 
-
     /**
      * 更新图表信息
      */
     private void updateChart() {
 
-
         //设置好下一个需要增加的节点
-//        addX = 0;
-//        addY = (int)(Math.random() * 90);
+        //        addX = 0;
+        //        addY = (int)(Math.random() * 90);
         //移除数据集中旧的点集
         mDataset.removeSeries(series);
         //判断当前点集中到底有多少点，因为屏幕总共只能容纳100个，所以当点数超过100时，长度永远是100
@@ -434,7 +434,7 @@ public class MeasureActivity extends Activity {
             // 把数据添加到mDatas中，用来保存到文件中
             if (count >= 10) {
                 // 测试数值显示和心跳动画用
-//
+                //
                 if (!mIsHeartAnimPlaying) {
                     m_HeartDrawable.startTwinkle();
                     mIsHeartAnimPlaying = true;
@@ -444,7 +444,7 @@ public class MeasureActivity extends Activity {
                 // 测试实时心率计算
                 mRealTimeDatas.add(brightvalue);
                 int n = mRealTimeDatas.size();
-                if (n > 30 && n % 10 == 0) {
+                if (n > 50 && n % 10 == 0) {
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -468,11 +468,11 @@ public class MeasureActivity extends Activity {
                 mGreenDatas.add(greenvalue);
                 mBlueDatas.add(bluevalue);
 
-
                 // 如果有效数据采集到300个，就跳转到保存数据的界面
-//                if (count >= 100) {
-                if (count == 2 * AXISXMAX) {
-
+                // 收集数据用
+                if (count == 4 * AXISXMAX) {
+                    // 用户使用
+                    //                if (count == 2 * AXISXMAX) {
 
                     UserDataBean userDataBean = new UserDataBean();
                     userDataBean.setDatas(mDatas);
@@ -526,7 +526,7 @@ public class MeasureActivity extends Activity {
                     }
                     Log.i("data_smoothed.length", data_smoothed.length + "");
                     System.out.println(data_origin_list2);
-//                    System.out.println(data_smoothed_list);
+                    //                    System.out.println(data_smoothed_list);
                     // peaksList为峰的横坐标列表
                     List<Integer> peaksList = CalculateHeartRate.findPeaks(data_smoothed_list);
                     mHeartRate = CalculateHeartRate.calHeartRate(peaksList, INTERVAL);
@@ -535,14 +535,13 @@ public class MeasureActivity extends Activity {
                     m_TvLabel.setText(mHeartRate + "");
                     Toast.makeText(MeasureActivity.this, "心率为" + mHeartRate, Toast.LENGTH_LONG).show();
 
-
                     userDataBean.setRr_datas(CalculateHeartRate.calRRIntevalOrigin(peaksList));
                     System.out.println(userDataBean.getRr_datas());
                     userDataBean.setNew_datas(data_smoothed_list);
                     System.out.println(userDataBean.getNew_datas());
 
                     userDataBean.setDatas(data_origin_list2);
-//                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
+                    //                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
                     // 上传给server端的数据
                     mMeasureData.setHeart_rate(mHeartRate);
                     mMeasureData.setRr_interval(CalculateHeartRate.calRRInteval(peaksList, INTERVAL));
@@ -557,15 +556,13 @@ public class MeasureActivity extends Activity {
                     mMeasureData.setData(float_list);
 
                     // 1. 用于用户使用
-//                    postToServer(MeasureActivity.this);
+                    //                    postToServer(MeasureActivity.this);
 
-
-
-//                    Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("userdatabean", userDataBean);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
+                    //                    Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
+                    //                    Bundle bundle = new Bundle();
+                    //                    bundle.putSerializable("userdatabean", userDataBean);
+                    //                    intent.putExtras(bundle);
+                    //                    startActivity(intent);
 
                     // 2. 用于收集数据使用
                     Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
@@ -589,7 +586,7 @@ public class MeasureActivity extends Activity {
                         for (int i = 0; i < length; i++) {
                             xv[i] = (int) series.getX(i) - 1;
                             yv[i] = series.getY(i);
-//                    Log.i("xv yv", xv[i] + " " + yv[i] + " " + i + " " + length);
+                            //                    Log.i("xv yv", xv[i] + " " + yv[i] + " " + i + " " + length);
                         }
                     }
 
@@ -630,7 +627,6 @@ public class MeasureActivity extends Activity {
             series.clear();
         }
 
-
     }
 
     /**
@@ -641,7 +637,7 @@ public class MeasureActivity extends Activity {
             YMAX = series.getMaxY();
             YMIN = series.getMinY();
         }
-//            Log.i("max min ",YMAX+" "+YMIN);
+        //            Log.i("max min ",YMAX+" "+YMIN);
 
         if (currentYtop - YMAX < 0.035) {
             currentYtop += 0.01;
@@ -661,7 +657,6 @@ public class MeasureActivity extends Activity {
         Log.i("Ytop Ybottom", currentYtop + " " + currentYbottom);
     }
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -671,21 +666,25 @@ public class MeasureActivity extends Activity {
     public void onResume() {
         super.onResume();
         wakeLock.acquire();
+
         camera = Camera.open();
         startTime = System.currentTimeMillis();
-//        mIsHeartRateCanSet=true;
+        //        mIsHeartRateCanSet=true;
     }
 
     @Override
     public void onPause() {
         super.onPause();
         wakeLock.release();
-        camera.setPreviewCallback(null);
-        camera.stopPreview();
-        camera.release();
-        camera = null;
-    }
+        if (camera!=null)
+        {
+            camera.setPreviewCallback(null);
+            camera.stopPreview();
+            camera.release();
+            camera = null;
 
+        }
+    }
 
     /**
      * 相机预览方法
@@ -694,13 +693,16 @@ public class MeasureActivity extends Activity {
      */
     private static PreviewCallback previewCallback = new PreviewCallback() {
         public void onPreviewFrame(byte[] data, Camera cam) {
-            if (data == null)
+            if (data == null) {
                 throw new NullPointerException();
+            }
             Camera.Size size = cam.getParameters().getPreviewSize();
-            if (size == null)
+            if (size == null) {
                 throw new NullPointerException();
-            if (!processing.compareAndSet(false, true))
+            }
+            if (!processing.compareAndSet(false, true)) {
                 return;
+            }
             int width = size.width;
             int height = size.height;
             //图像处理
@@ -710,11 +712,9 @@ public class MeasureActivity extends Activity {
             greenvalue = imgAvg[2];
             bluevalue = imgAvg[3];
 
-
             processing.set(false);
         }
     };
-
 
     /**
      * 预览回调接口
@@ -737,7 +737,6 @@ public class MeasureActivity extends Activity {
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
-
             Camera.Parameters parameters = camera.getParameters();
             parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
             Camera.Size size = getSmallestPreviewSize(parameters);
@@ -757,11 +756,11 @@ public class MeasureActivity extends Activity {
         }
     };
 
-
     /**
      * 获取相机最小的预览尺寸
      *
      * @param parameters
+     *
      * @return
      */
     private static Camera.Size getSmallestPreviewSize(Camera.Parameters parameters) {
@@ -776,8 +775,9 @@ public class MeasureActivity extends Activity {
             } else {
                 int resultArea = result.width * result.height;
                 int newArea = size.width * size.height;
-                if (newArea < resultArea)
+                if (newArea < resultArea) {
                     result = size;
+                }
             }
 
         }
@@ -810,11 +810,12 @@ public class MeasureActivity extends Activity {
 
                             try {
                                 JSONObject jsonObject = new JSONObject(jsonString);
-                                if (jsonObject.has("pressure"))
+                                if (jsonObject.has("pressure")) {
                                     pressure = (int) (jsonObject.getDouble("pressure"));
-                                if (jsonObject.has("advice"))
+                                }
+                                if (jsonObject.has("advice")) {
                                     ad = jsonObject.getString("advice");
-
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -829,7 +830,6 @@ public class MeasureActivity extends Activity {
                             startActivity(intent);
                         }
 
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -842,7 +842,6 @@ public class MeasureActivity extends Activity {
                 //在这里设置需要post的参数
                 Map<String, String> map = new HashMap<String, String>();
 
-
                 Gson gson = new Gson();
                 String measuredata_str = gson.toJson(mMeasureData);
                 map.put("userid", GlobalData.getUserid());
@@ -853,10 +852,14 @@ public class MeasureActivity extends Activity {
                 return map;
             }
         };
-//        request.setRetryPolicy(new DefaultRetryPolicy(50000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50 * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //        request.setRetryPolicy(new DefaultRetryPolicy(50000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        // DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50 * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // 将请求添加到请求队列
         requestQueue.add(stringRequest);
     }
+
+
 
 }

@@ -4,11 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:background="@color/main"
-        android:fitsSystemWindows="true" />
+     />
 
     <android.support.v4.view.ViewPager
 
@@ -20,7 +16,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="#888" />
+        android:background="@color/line" />
 
     <com.lzy.heartset.ui.AlphaIndicator
         android:id="@+id/alphaIndicator"
