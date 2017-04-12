@@ -84,8 +84,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
     private static final int YEAR = 4;
 
     List<HistoryDataItemBean> mHistoryDataItemList = new ArrayList<>();
-    FragmentManager mManager;
-    FragmentTransaction mTransaction;
 
 
     @Override
@@ -96,18 +94,17 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
 
 
-        mManager = getFragmentManager();
-        // 开启Fragment事务
-        mTransaction = mManager.beginTransaction();
 
         Bundle bundle = getIntent().getExtras();
         mDate = bundle.getString("date");
+//        GlobalData.select_date=mDate;
+        GlobalData.select_date="2017-02-07";
         initView();
-        setDefaultFragment();
 
         // 初始化当前历史数据类型（心率、血氧等）
         GlobalData.currenttype = GlobalData.MeasureType.HEART_RATE;
 
+//        setDefaultFragment();
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
 
@@ -133,9 +130,14 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
                 }
                 postToServer(HistoryActivity.this, mTimeType, transaction);
-
+                System.out.println("执行了一次onCheckedChanged()");
             }
         });
+
+
+        // 解决Radiogroup初始化问题
+        mRadioGroup.check(R.id.rb_null);
+        mRadioGroup.check(R.id.rb_day);
 
 
     }
@@ -415,6 +417,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                 map.put("date", mDate);
                 map.put("type", String.valueOf(type));
                 map.put("sort_type", "1");
+                Log.i("getParams()",map.toString());
                 return map;
             }
         };
@@ -453,8 +456,8 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         FragmentTransaction transaction = mManager.beginTransaction();
         switch (mTimeType) {
             case DAY:
-                mDayHistoryFragment = new DayHistoryFragment();
-                transaction.replace(R.id.fl_history, mDayHistoryFragment);
+                DayHistoryFragment fragment = new DayHistoryFragment();
+                transaction.replace(R.id.fl_history, fragment);
                 break;
             case WEEK:
                 mWeekHistoryFragment = new WeekHistoryFragment();

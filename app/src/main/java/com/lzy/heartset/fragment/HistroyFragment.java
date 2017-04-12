@@ -47,7 +47,7 @@ public class HistroyFragment extends Fragment {
                 Intent intent=new Intent(context, HistoryActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putString("date",date);
-                GlobalData.select_date="2017-02-07";
+//                GlobalData.select_date="2017-02-07";
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

@@ -28,8 +28,6 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ComboLineColumnChartView;
 
-import static com.lzy.heartset.utils.GlobalData.MeasureType;
-
 /**
  * Created by yuqing on 2017/3/16.
  */
@@ -56,6 +54,7 @@ public class WeekHistoryFragment extends Fragment {
 
     public static String[] days = new String[7];
     List<HistoryDataItemBean> historyList = new ArrayList<>(GlobalData.historyDataItemBeanList);
+    private Axis mAxisY;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -102,13 +101,24 @@ public class WeekHistoryFragment extends Fragment {
         if (hasAxes) {
             Axis axisX = new Axis(axisValues);
             axisX.setHasLines(true);
-            Axis axisY = new Axis().setHasLines(true);
+            mAxisY = new Axis().setHasLines(true);
             if (hasAxesNames) {
-                axisX.setName("日期");
-                axisY.setName("心率");
+                // 坐标轴标签
+                axisX.setName("时间");
+                switch (GlobalData.currenttype) {
+                    case HEART_RATE:
+                        mAxisY.setName("心率/bps");
+                        break;
+                    case BLOOD_OXYGEN:
+                        mAxisY.setName("血氧/%");
+                        break;
+                    case PRESSURE:
+                        mAxisY.setName("压力值");
+                        break;
+                }
             }
             data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
+            data.setAxisYLeft(mAxisY);
         } else {
             data.setAxisXBottom(null);
             data.setAxisYLeft(null);
@@ -484,12 +494,12 @@ public class WeekHistoryFragment extends Fragment {
 
                 values2 = new ArrayList<SubcolumnValue>();
                 Log.e("resY", resY[0] + " " + resY[1] + " " + resY[2]);
-                values2.add(new SubcolumnValue(resY[1], resY[2], ChartUtils.COLOR_GREEN));
+                values2.add(new SubcolumnValue(resY[1], resY[2], getResources().getColor(R.color.column_chart_green)));
                 columns.add(new Column(values2));
             }
 
             Line line = new Line(values1);
-            line.setColor(ChartUtils.COLORS[i]);
+            line.setColor(getResources().getColor(R.color.linear_chart_green));
             line.setCubic(isCubic);
             line.setHasLabels(hasLabels);
             line.setHasLines(hasLines);

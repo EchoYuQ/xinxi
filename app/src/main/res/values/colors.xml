@@ -100,7 +100,7 @@
     <color name="pressure_high">#3D6743</color>
 
     <color name="column_chart_green">#9770a975</color>
-    <color name="linear_chart_green">#9770a975</color>
+    <color name="linear_chart_green">#60c76e</color>
     <color name="history_time_type_text_green">#6ccb79</color>
     <color name="history_time_type_text_gray">#6ccb79</color>
     <color name="history_measure_type_text">#55c364</color>

@@ -54,6 +54,7 @@ public class DayHistoryFragment extends Fragment {
     private LineChartData mLineChartData;
     private ColumnChartData mColumnChartData;
     List<HistoryDataItemBean> mHistoryDataItemList = new ArrayList<>(GlobalData.historyDataItemBeanList);
+    Axis mAxisY;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -139,32 +140,10 @@ public class DayHistoryFragment extends Fragment {
      * 计算出折线图和柱形图的数据集
      */
     private void generateXY() {
-
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 50, 65, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
-//        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
 //        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
 //        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
 
 
-//        int x = calculateX(15, 20);
-//        listList.get(x).add(100f);
-//        int x1 = calculateX(15, 10);
-//        listList.get(x1).add(90f);
-//        int x2 = calculateX(15, 40);
-//        listList.get(x2).add(68f);
-//        int x3 = calculateX("16:30");
-//        listList.get(x3).add(78f);
-//        listList.get(calculateX("16:30")).add(78f);
-//        listList.get(calculateX("12:30")).add(72f);
 //        listList.get(calculateX("16:20")).add(75f);
 //        listList.get(calculateX("16:38")).add(76f);
 
@@ -201,16 +180,6 @@ public class DayHistoryFragment extends Fragment {
                 Log.i("resY", resY + "");
                 values1.add(new PointValue(calculateX(time), resY));
 
-//                values2 = new ArrayList<SubcolumnValue>();
-//                values2.add(new SubcolumnValue(resY, resY, ChartUtils.COLOR_GREEN));
-//                columns.add(new Column(values2));
-
-
-//                if (listList.get(j).size() > 0) {
-//
-//                    values1.add(new PointValue(j, resY[0]));
-//                }
-
 
             }
 
@@ -218,7 +187,7 @@ public class DayHistoryFragment extends Fragment {
 
 
             Line line = new Line(values1);
-            line.setColor(ChartUtils.COLORS[i]);
+            line.setColor(getResources().getColor(R.color.linear_chart_green));
             line.setCubic(isCubic);
             line.setHasLabels(hasLabels);
             line.setHasLines(hasLines);
@@ -242,13 +211,25 @@ public class DayHistoryFragment extends Fragment {
         }
         if (hasAxes) {
             Axis axisX = new Axis(axisValues);
-            Axis axisY = new Axis().setHasLines(true);
+            mAxisY = new Axis().setHasLines(true);
             if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
+                // 坐标轴标签
+                axisX.setName("时间");
+                switch (GlobalData.currenttype) {
+                    case HEART_RATE:
+                        mAxisY.setName("心率/bps");
+                        break;
+                    case BLOOD_OXYGEN:
+                        mAxisY.setName("血氧/%");
+                        break;
+                    case PRESSURE:
+                        mAxisY.setName("压力值");
+                        break;
+                }
+
             }
             data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
+            data.setAxisYLeft(mAxisY);
         } else {
             data.setAxisXBottom(null);
             data.setAxisYLeft(null);
@@ -268,7 +249,7 @@ public class DayHistoryFragment extends Fragment {
             }
 
             Line line = new Line(values);
-            line.setColor(ChartUtils.COLORS[i]);
+            line.setColor(getResources().getColor(R.color.linear_chart_green));
             line.setCubic(isCubic);
             line.setHasLabels(hasLabels);
             line.setHasLines(hasLines);

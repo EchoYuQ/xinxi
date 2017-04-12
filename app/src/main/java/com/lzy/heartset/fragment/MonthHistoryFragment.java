@@ -57,6 +57,7 @@ public class MonthHistoryFragment extends Fragment {
     private ColumnChartData mColumnChartData;
 
     private List<HistoryDataItemBean> mHistoryDataItemList=new ArrayList<>(GlobalData.historyDataItemBeanList);
+    private Axis mAxisY;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -103,13 +104,24 @@ public class MonthHistoryFragment extends Fragment {
         if (hasAxes) {
             Axis axisX = new Axis(axisValues);
             axisX.setHasLines(true);
-            Axis axisY = new Axis().setHasLines(true);
+            mAxisY = new Axis().setHasLines(true);
             if (hasAxesNames) {
+                // 坐标轴标签
                 axisX.setName("时间");
-                axisY.setName("心率");
+                switch (GlobalData.currenttype) {
+                    case HEART_RATE:
+                        mAxisY.setName("心率/bps");
+                        break;
+                    case BLOOD_OXYGEN:
+                        mAxisY.setName("血氧/%");
+                        break;
+                    case PRESSURE:
+                        mAxisY.setName("压力值");
+                        break;
+                }
             }
             data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
+            data.setAxisYLeft(mAxisY);
         } else {
             data.setAxisXBottom(null);
             data.setAxisYLeft(null);
@@ -346,13 +358,6 @@ public class MonthHistoryFragment extends Fragment {
         }
 
 
-
-
-//        for (HistoryDataItemBean item:mHistoryDataItemList)
-//        {
-//            listList.get(calculateX(item.getDate())).add((float)item.getHeart_rate());
-//        }
-
         for (HistoryDataItemBean item:mHistoryDataItemList)
         {
             switch (GlobalData.currenttype)
@@ -370,19 +375,6 @@ public class MonthHistoryFragment extends Fragment {
 
 
         }
-
-//        listList.get(calculateX("25")).add(78f);
-//        listList.get(calculateX("25")).add(100f);
-//        listList.get(calculateX("1")).add(72f);
-//        listList.get(calculateX("6")).add(75f);
-//        listList.get(calculateX("6")).add(50f);
-//        listList.get(calculateX("8")).add(76f);
-//        listList.get(calculateX("8")).add(100f);
-//        listList.get(calculateX("8")).add(60f);
-//        listList.get(calculateX("8")).add(64f);
-
-//        for (int i=0;i<hours.length;i++)
-//        Log.e("listList",listList.get(i).size()+"");
 
 
         List<Line> lines = new ArrayList<Line>();
@@ -402,12 +394,12 @@ public class MonthHistoryFragment extends Fragment {
 
                 values2 = new ArrayList<SubcolumnValue>();
                 Log.e("resY", resY[0] + " " + resY[1] + " " + resY[2]);
-                values2.add(new SubcolumnValue(resY[1], resY[2], ChartUtils.COLOR_GREEN));
+                values2.add(new SubcolumnValue(resY[1], resY[2], getResources().getColor(R.color.column_chart_green)));
                 columns.add(new Column(values2));
             }
 
             Line line = new Line(values1);
-            line.setColor(ChartUtils.COLORS[i]);
+            line.setColor(getResources().getColor(R.color.linear_chart_green));
             line.setCubic(isCubic);
             line.setHasLabels(hasLabels);
             line.setHasLines(hasLines);
