@@ -10,6 +10,9 @@ public class HistoryDataItemBean {
     private int heart_rate;
     private int blood_oxygen;
 
+    public HistoryDataItemBean()
+    {}
+
     public HistoryDataItemBean(String date, String time, int pressure, int heart_rate, int blood_oxygen) {
         this.date = date;
         this.time = time;

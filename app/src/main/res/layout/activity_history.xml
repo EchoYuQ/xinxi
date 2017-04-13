@@ -11,6 +11,7 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
+
         <RadioButton
             android:id="@+id/rb_null"
             android:layout_width="0dp"
@@ -22,7 +23,6 @@
             android:textColor="@drawable/color_radiobutton"
             android:textSize="16sp"
             android:visibility="gone"/>
-
         <RadioButton
             android:id="@+id/rb_day"
             android:layout_width="0dp"

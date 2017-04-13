@@ -46,7 +46,11 @@ public class HistroyFragment extends Fragment {
                 Toast.makeText(context, date, Toast.LENGTH_LONG).show();
                 Intent intent=new Intent(context, HistoryActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putString("date",date);
+                String[] dates=date.split("-");
+                if(Integer.parseInt(dates[1])<10) dates[1]="0"+dates[1];
+                if(Integer.parseInt(dates[2])<10) dates[2]="0"+dates[2];
+                String new_date=dates[0]+"-"+dates[1]+"-"+dates[2];
+                bundle.putString("date",new_date);
 //                GlobalData.select_date="2017-02-07";
                 intent.putExtras(bundle);
                 startActivity(intent);

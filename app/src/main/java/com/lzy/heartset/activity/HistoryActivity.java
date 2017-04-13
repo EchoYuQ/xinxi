@@ -35,8 +35,13 @@ import com.lzy.heartset.fragment.MonthHistoryFragment;
 import com.lzy.heartset.fragment.WeekHistoryFragment;
 import com.lzy.heartset.utils.GlobalData;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +51,7 @@ import java.util.Map;
  */
 public class HistoryActivity extends Activity implements View.OnClickListener {
     // 端口号为8080
-    private static final String URL_HISTORY = GlobalData.URL_HEAD + ":9000/detect3/HistoryServlet";
+    private static final String URL_HISTORY = GlobalData.URL_HEAD + ":8080/detect3/HistoryServlet";
     // 临时测试用
     RadioGroup mRadioGroup;
     RadioButton mRbDay;
@@ -84,6 +89,8 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
     private static final int YEAR = 4;
 
     List<HistoryDataItemBean> mHistoryDataItemList = new ArrayList<>();
+    // 上次点击的时间类型ID
+    private int mLastTimeTypeId;
 
 
     @Override
@@ -97,14 +104,30 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
         Bundle bundle = getIntent().getExtras();
         mDate = bundle.getString("date");
-//        GlobalData.select_date=mDate;
-        GlobalData.select_date="2017-02-07";
+        GlobalData.select_date=mDate;
+//        GlobalData.select_date="2017-02-07";
+        GlobalData.currenttype = GlobalData.MeasureType.HEART_RATE;
         initView();
 
         // 初始化当前历史数据类型（心率、血氧等）
-        GlobalData.currenttype = GlobalData.MeasureType.HEART_RATE;
 
 //        setDefaultFragment();
+
+
+
+
+
+
+    }
+
+//    private void setDefaultFragment() {
+//        FragmentManager manager = getFragmentManager();
+//        FragmentTransaction transaction = manager.beginTransaction();
+//        postToServer(HistoryActivity.this, DAY, transaction);
+//    }
+
+    private void initView() {
+        mRadioGroup = (RadioGroup) findViewById(R.id.rg_choose);
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
 
@@ -129,33 +152,23 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                         break;
 
                 }
-                postToServer(HistoryActivity.this, mTimeType, transaction);
-                System.out.println("执行了一次onCheckedChanged()");
+
+                if (checkedId!=R.id.rb_null&&checkedId!=mLastTimeTypeId)
+                {
+                    postToServer(HistoryActivity.this, mTimeType, transaction);
+                    System.out.println("执行了一次onCheckedChanged()");
+                }
+                mLastTimeTypeId=checkedId;
+
             }
         });
-
-
-        // 解决Radiogroup初始化问题
-        mRadioGroup.check(R.id.rb_null);
-        mRadioGroup.check(R.id.rb_day);
-
-
-    }
-
-    private void setDefaultFragment() {
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        postToServer(HistoryActivity.this, DAY, transaction);
-    }
-
-    private void initView() {
-        mRadioGroup = (RadioGroup) findViewById(R.id.rg_choose);
 
         mRbDay = (RadioButton) findViewById(R.id.rb_day);
         mRbWeek = (RadioButton) findViewById(R.id.rb_week);
         mRbMonth = (RadioButton) findViewById(R.id.rb_month);
-//        mRbYear = (RadioButton) findViewById(R.id.rb_year);
-        mRbDay.setChecked(true);
+        // 解决Radiogroup初始化问题
+//        mRadioGroup.check(R.id.rb_null);
+        mRadioGroup.check(R.id.rb_day);
 
         mIvLast = (ImageView) findViewById(R.id.id_iv_last);
         mIvNext = (ImageView) findViewById(R.id.id_iv_next);
@@ -249,7 +262,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onResponse(String response) {
                         Log.d("请求成功", "response -> " + response);
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
 
                         Gson gson = new Gson();
 
@@ -257,30 +270,58 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
                         if (responseBean.getCode() == 0) {
 //                        if (true) {
-                            Toast.makeText(HistoryActivity.this, responseBean.toString(), Toast.LENGTH_SHORT).show();
-                            // TODO: 2017/4/4  解析服务器返回的历史数据，并存到 mHistoryDataItemList
+//                            Toast.makeText(HistoryActivity.this, responseBean.toString(), Toast.LENGTH_SHORT).show();
+                            // 解析服务器返回的历史数据，并存到 mHistoryDataItemList
+                            GlobalData.historyDataItemBeanList.clear();
+                            try {
+                                JSONObject jsonObject=new JSONObject(responseBean.getBody());
+                                if(jsonObject.has("data_list"))
+                                {
+                                    JSONArray jsonArray= jsonObject.getJSONArray("data_list");
+                                    for(int i=0;i<jsonArray.length();i++)
+                                    {
+                                        JSONObject temp= (JSONObject) jsonArray.get(i);
+                                        HistoryDataItemBean bean=new HistoryDataItemBean();
+                                        bean.setDate(temp.getString("date"));
+                                        bean.setTime(temp.getString("time"));
+                                        bean.setHeart_rate(temp.getInt("heart_rate"));
+                                        bean.setBlood_oxygen(temp.getInt("blood_oxygen"));
+                                        bean.setPressure(temp.getInt("pressure"));
+                                        mHistoryDataItemList.add(bean);
+                                    }
+                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
 
                             switch (type) {
                                 case DAY:
 
-                                    GlobalData.historyDataItemBeanList.clear();
-                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+//                                    GlobalData.historyDataItemBeanList.clear();
+//
+//
+//                                    mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
+//                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+
 
                                     mDayHistoryFragment = new DayHistoryFragment();
                                     transaction.replace(R.id.fl_history, mDayHistoryFragment);
                                     break;
                                 case WEEK:
 
-                                    GlobalData.historyDataItemBeanList.clear();
-                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+//                                    GlobalData.historyDataItemBeanList.clear();
+//                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
 
                                     mWeekHistoryFragment = new WeekHistoryFragment();
                                     transaction.replace(R.id.fl_history, mWeekHistoryFragment);
                                     break;
                                 case MONTH:
-
-                                    GlobalData.historyDataItemBeanList.clear();
-                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+//
+//                                    GlobalData.historyDataItemBeanList.clear();
+//                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
 
                                     mMonthHistoryFragment = new MonthHistoryFragment();
                                     transaction.replace(R.id.fl_history, mMonthHistoryFragment);
