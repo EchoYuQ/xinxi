@@ -153,19 +153,19 @@ public class MainPageFragment extends Fragment implements OnClickListener {
         View v1 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l1 = (LinearLayout) v1.findViewById(R.id.advertise_item);
-        l1.setBackgroundResource(R.drawable.ad1);
+        l1.setBackgroundResource(R.drawable.ad2);
         ar.add(l1);
 
         View v2 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l2 = (LinearLayout) v2.findViewById(R.id.advertise_item);
-        l2.setBackgroundResource(R.drawable.ad1);
+        l2.setBackgroundResource(R.drawable.ad3);
         ar.add(l2);
 
         View v3 = getActivity().getLayoutInflater().inflate(
                 R.layout.advertise_item, null);
         LinearLayout l3 = (LinearLayout) v3.findViewById(R.id.advertise_item);
-        l3.setBackgroundResource(R.drawable.ad1);
+        l3.setBackgroundResource(R.drawable.ad4);
         ar.add(l3);
 
         adapter = new GuidePageAdapter(getActivity(), ar);

@@ -81,8 +81,8 @@ public class LogoActivity extends Activity {
 
                         // TODO: 2017/3/20 加一个GlobalData
 
+//                        Toast.makeText(LogoActivity.this,responseBean.toString(),Toast.LENGTH_LONG).show();
                         if (responseBean.getCode() == 0) {
-                            Toast.makeText(LogoActivity.this,responseBean.toString(),Toast.LENGTH_LONG).show();
                             // 跳转到主界面
                             startActivity(new Intent(LogoActivity.this, MainActivity.class));
                             String jsonString =  responseBean.getBody();

@@ -12,6 +12,7 @@
         android:background="@drawable/user_bg">
 
         <TextView
+            android:id="@+id/id_greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -120,8 +121,8 @@
             android:textColor="@color/text_black"/>
 
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginRight="15dp"
@@ -166,8 +167,8 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginRight="15dp"

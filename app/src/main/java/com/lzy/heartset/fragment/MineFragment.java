@@ -27,6 +27,7 @@ import com.lzy.heartset.ui.AlphaIndicator;
 import com.lzy.heartset.ui.RoundImageView;
 import com.lzy.heartset.utils.FileUtil;
 import com.lzy.heartset.utils.GlobalData;
+import com.lzy.heartset.utils.TimeUtil;
 
 
 /**
@@ -37,6 +38,7 @@ public class MineFragment extends Fragment {
     // 组件
     private RoundImageView mIvUimage = null;// 头像图片
     private TextView mTvName;// 昵称
+    private TextView mTvGreeting;// 问候语
 
     // 用户缓存
     private SharedPreferences preferences;
@@ -80,8 +82,18 @@ public class MineFragment extends Fragment {
      * 初始化控件方法
      */
     private void initView() {
+
+
         mIvUimage = (RoundImageView) view.findViewById(R.id.iv_uimage);// 头像
 
+        mTvGreeting= (TextView) view.findViewById(R.id.id_greeting);
+        String time=TimeUtil.getCurrentTime();
+        String times[]=time.split(":");
+        int hour=Integer.parseInt(times[0]);
+        if (hour>=18||hour<5) mTvGreeting.setText("Good Night!");
+        else if(hour>=5&&hour<12) mTvGreeting.setText("Good Morning!");
+        else if(hour>=12&&hour<14) mTvGreeting.setText("Good Noon!");
+        else if(hour>=14&&hour<18) mTvGreeting.setText("Good Afternoon!");
 
         mTvName = (TextView) view.findViewById(R.id.tv_name);
         mTvName.setText(GlobalData.username);

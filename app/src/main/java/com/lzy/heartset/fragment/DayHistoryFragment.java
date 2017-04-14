@@ -177,7 +177,7 @@ public class DayHistoryFragment extends Fragment {
                         resY = (float) mHistoryDataItemList.get(j).getPressure();
                         break;
                 }
-                Log.i("resY", resY + "");
+//                Log.i("resY", resY + "");
                 values1.add(new PointValue(calculateX(time), resY));
 
 

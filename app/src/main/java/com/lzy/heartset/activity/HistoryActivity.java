@@ -10,15 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,7 +38,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,10 +94,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_history);
         super.onCreate(savedInstanceState);
 
-
-
-
-
         Bundle bundle = getIntent().getExtras();
         mDate = bundle.getString("date");
         GlobalData.select_date=mDate;
@@ -110,7 +102,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         initView();
 
         // 初始化当前历史数据类型（心率、血氧等）
-
 //        setDefaultFragment();
 
 
@@ -273,6 +264,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 //                            Toast.makeText(HistoryActivity.this, responseBean.toString(), Toast.LENGTH_SHORT).show();
                             // 解析服务器返回的历史数据，并存到 mHistoryDataItemList
                             GlobalData.historyDataItemBeanList.clear();
+                            mHistoryDataItemList.clear();
                             try {
                                 JSONObject jsonObject=new JSONObject(responseBean.getBody());
                                 if(jsonObject.has("data_list"))

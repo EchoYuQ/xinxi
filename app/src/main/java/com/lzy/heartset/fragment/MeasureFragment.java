@@ -20,9 +20,9 @@ import com.lzy.heartset.ui.RoundImageView;
  */
 public class MeasureFragment extends Fragment {
     private View view;
-    private RoundImageView imageView;
-    private ImageView hintImageView;
-    private AnimationDrawable animationDrawable;
+//    private RoundImageView imageView;
+//    private ImageView hintImageView;
+//    private AnimationDrawable animationDrawable;
     private RippleImageView rippleImageView;
     private ImageView startImageView;
     private Context mContext;
@@ -48,11 +48,11 @@ public class MeasureFragment extends Fragment {
 
     void initView()
     {
-        hintImageView= (ImageView) view.findViewById(R.id.iv_hintanimation);
+//        hintImageView= (ImageView) view.findViewById(R.id.iv_hintanimation);
 
-        hintImageView.setImageResource(R.drawable.animation1);
-        animationDrawable = (AnimationDrawable) hintImageView.getDrawable();
-        animationDrawable.start();
+//        hintImageView.setImageResource(R.drawable.animation1);
+//        animationDrawable = (AnimationDrawable) hintImageView.getDrawable();
+//        animationDrawable.start();
 
         rippleImageView= (RippleImageView) view.findViewById(R.id.rippleImageView);
 

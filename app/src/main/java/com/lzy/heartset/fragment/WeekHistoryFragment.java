@@ -493,7 +493,7 @@ public class WeekHistoryFragment extends Fragment {
                 }
 
                 values2 = new ArrayList<SubcolumnValue>();
-                Log.e("resY", resY[0] + " " + resY[1] + " " + resY[2]);
+//                Log.e("resY", resY[0] + " " + resY[1] + " " + resY[2]);
                 values2.add(new SubcolumnValue(resY[1], resY[2], getResources().getColor(R.color.column_chart_green)));
                 columns.add(new Column(values2));
             }

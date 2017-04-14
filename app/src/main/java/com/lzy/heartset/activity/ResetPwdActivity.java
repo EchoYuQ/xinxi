@@ -122,7 +122,6 @@ public class ResetPwdActivity extends Activity {
 					@Override
 					public void onResponse(String response) {
 						Log.d("请求成功", "response -> " + response);
-						Toast.makeText(ResetPwdActivity.this, response, Toast.LENGTH_LONG).show();
 
 						Gson gson = new Gson();
 
@@ -162,6 +161,7 @@ public class ResetPwdActivity extends Activity {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				Log.e("请求失败", error.getMessage(), error);
+				Toast.makeText(ResetPwdActivity.this, "请求服务器失败，请检查网络", Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override
@@ -192,7 +192,6 @@ public class ResetPwdActivity extends Activity {
 					@Override
 					public void onResponse(String response) {
 						Log.d("请求成功", "response -> " + response);
-						Toast.makeText(ResetPwdActivity.this, response, Toast.LENGTH_LONG).show();
 
 						Gson gson = new Gson();
 
@@ -205,18 +204,10 @@ public class ResetPwdActivity extends Activity {
 										Toast.LENGTH_LONG).show();
 								mTimeCount.start();// 开始计时
 								break;
-							case 20002:
-								Toast.makeText(ResetPwdActivity.this,
-										"该手机号已经是注册用户", Toast.LENGTH_LONG).show();
-								break;
-							case 20015:
-								Toast.makeText(ResetPwdActivity.this,
-										"该手机号在快递员APP已经被注册", Toast.LENGTH_LONG)
-										.show();
-								break;
+
 							default:
 								Toast.makeText(ResetPwdActivity.this,
-										"发送失败", Toast.LENGTH_LONG)
+										responseBean.getBody(), Toast.LENGTH_LONG)
 										.show();
 								break;
 						}
@@ -227,6 +218,7 @@ public class ResetPwdActivity extends Activity {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				Log.e("请求失败", error.getMessage(), error);
+				Toast.makeText(ResetPwdActivity.this, "请求服务器失败，请检查网络", Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override

@@ -43,7 +43,6 @@ public class LoginActivity extends Activity {
     private String str_name;
     private String str_pwd;
     private String str_json;
-    LoginInfo loginInfo = new LoginInfo();
 
     // 对端口号和URI的定义
     private static final String URL_LOGIN = GlobalData.URL_HEAD+":8080/detect3/LoginServlet";
@@ -169,11 +168,11 @@ public class LoginActivity extends Activity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("请求成功", "response -> " + response);
-                        Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
                         Log.i("LOGIN response", response);
                         Gson gson = new Gson();
 
                         ResponseBean responseBean = gson.fromJson(response, ResponseBean.class);
+                        Toast.makeText(LoginActivity.this, responseBean.getMsg(), Toast.LENGTH_LONG).show();
 
                         // TODO: 2017/3/20 加一个GlobalData
 
@@ -223,6 +222,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("请求失败", error.getMessage(), error);
+                Toast.makeText(LoginActivity.this, "连接服务器失败，请检查网络", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
