@@ -241,15 +241,12 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
             switch (mode) {
                 case MODE_DRAW:
                     drawSubcolumn(canvas, column, columnValue, false);
-                    Log.e("222222", "11111");
                     break;
                 case MODE_HIGHLIGHT:
                     highlightSubcolumn(canvas, column, columnValue, valueIndex, false);
-                    Log.e("222222", "222222");
                     break;
                 case MODE_CHECK_TOUCH:
                     checkRectToDraw(columnIndex, valueIndex);
-                    Log.e("222222", "33333");
                     break;
                 default:
                     // There no else, every case should be handled or exception will
@@ -319,15 +316,12 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
             switch (mode) {
                 case MODE_DRAW:
                     drawSubcolumn(canvas, column, columnValue, true);
-                    Log.e("111111", "11111");
                     break;
                 case MODE_HIGHLIGHT:
                     highlightSubcolumn(canvas, column, columnValue, valueIndex, true);
-                    Log.e("111111", "2222");
                     break;
                 case MODE_CHECK_TOUCH:
                     checkRectToDraw(columnIndex, valueIndex);
-                    Log.e("111111", "33333");
                     break;
                 default:
                     // There no else, every case should be handled or exception will

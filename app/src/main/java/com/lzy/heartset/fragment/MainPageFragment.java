@@ -78,6 +78,7 @@ public class MainPageFragment extends Fragment implements OnClickListener {
     private List<Result.DataBean> dataBeanList1;
 
     private LinearLayout mLlNews1,mLlNews2,mLlNews3;
+    private LinearLayout mLlDuxin;
     private TextView mTvNews1,mTvNews2,mTvNews3;
     private int mId;
 
@@ -132,6 +133,14 @@ public class MainPageFragment extends Fragment implements OnClickListener {
             @Override
             public void onClick(View v) {
                 alphaIndicator.setPagerNum(3);
+            }
+        });
+
+        mLlDuxin= (LinearLayout) view.findViewById(R.id.id_ll_duxin);
+        mLlDuxin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alphaIndicator.setPagerNum(1);
             }
         });
 
@@ -331,6 +340,7 @@ public class MainPageFragment extends Fragment implements OnClickListener {
             case R.id.id_ll_news3:
                 mId=dataBeanList1.get(2).getId();
                 break;
+
         }
         String url = URL_DETAILS  + mId;
         Intent intent = new Intent(getActivity(), WebActivity.class);

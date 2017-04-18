@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="XINXI"
+                android:text="XINYU"
                 android:textSize="30sp"
                 android:textColor="@color/text_white" />
 
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                android:text="-心系-"
+                android:text="-心域-"
                 android:textColor="@color/text_white"
                 android:textSize="18sp" />
 

@@ -81,11 +81,11 @@
             android:text="疲劳度:"
             android:textSize="18sp"
             />
-        <EditText
+        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/id_et_fatigue"
-            android:inputType="number"/>
+            android:id="@+id/id_spinner_pressure"
+            android:entries="@array/pressure_array"/>
 
     </LinearLayout>
     <LinearLayout

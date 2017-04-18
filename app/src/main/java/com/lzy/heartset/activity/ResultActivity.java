@@ -22,6 +22,7 @@ public class ResultActivity extends Activity {
     int mMiddleColor;
     int mLowColor;
     int mHighColor;
+    String mAlert;
 
 
     @Override
@@ -33,6 +34,8 @@ public class ResultActivity extends Activity {
         Bundle bundle=getIntent().getExtras();
         mHeartRate =  bundle.getInt("heart_rate");
         mFatigue =  bundle.getInt("pressure");
+
+        mAlert=bundle.getString("alert");
 
         initColor();
         initView();
@@ -118,7 +121,7 @@ public class ResultActivity extends Activity {
                 ci1.setmAlertColor(mHighColor);
             }
         }
-        ci1.setContent(title, content, unit, alert);
+        ci1.setContent(title, content, unit, mAlert);
         ci1.setIndicatorValue(dividerIndicator, mFatigue);
     }
 }

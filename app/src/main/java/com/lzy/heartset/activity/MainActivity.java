@@ -1,6 +1,7 @@
 package com.lzy.heartset.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -68,7 +69,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         initEvent();
     }
 
+
+
+
     private void initEvent() {
+
         viewPager.setAdapter(new MainAdapter(getSupportFragmentManager()));
         alphaIndicator.setViewPager(viewPager);
         mTab1.setOnClickListener(this);
@@ -141,6 +146,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("MainActivity","onDestroy");
     }
 
     /**

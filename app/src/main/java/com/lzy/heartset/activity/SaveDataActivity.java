@@ -1,10 +1,12 @@
 package com.lzy.heartset.activity;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,10 +43,10 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
     private RadioGroup rg_mSex;
     private RadioButton rb_mMan;
     private RadioButton rb_mWoman;
-    private EditText et_mFatigue;
+//    private EditText et_mFatigue;
     private Button btn_mSaveDataBtn;
     private String mfileName;
-    private Spinner mSpinnerDiet, mSpinnerWeather, mSpinnerHealth, mSpinnerSport, mSpinnerNap;
+    private Spinner mSpinnerPressure,mSpinnerDiet, mSpinnerWeather, mSpinnerHealth, mSpinnerSport, mSpinnerNap;
     private EditText mEtHeight, mEtWeight;
     private String mUserName = "";
     private MeasureData mMeasureData = new MeasureData();
@@ -59,24 +61,22 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_savedata);
         init();
-
-    }
-
-    @Override
-    protected void onResume() {
         mMeasureData = (MeasureData) getIntent().getSerializableExtra("measure_data");
         Gson gson = new Gson();
         mMeasureDataString = gson.toJson(mMeasureData);
         Log.i("mMeasureDataString", mMeasureDataString);
-        super.onResume();
+
     }
+
+
 
     void init() {
         et_mUserName = (EditText) findViewById(R.id.id_et_usermame);
         et_mAge = (EditText) findViewById(R.id.id_et_age);
-        et_mFatigue = (EditText) findViewById(R.id.id_et_fatigue);
+//        et_mFatigue = (EditText) findViewById(R.id.id_et_fatigue);
         et_mUserName = (EditText) findViewById(R.id.id_et_usermame);
         mEtHeight = (EditText) findViewById(R.id.id_et_height);
         mEtWeight = (EditText) findViewById(R.id.id_et_weight);
@@ -101,6 +101,7 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                 break;
         }
 
+        mSpinnerPressure = (Spinner) findViewById(R.id.id_spinner_pressure);
         mSpinnerDiet = (Spinner) findViewById(R.id.id_spinner_diet);
         mSpinnerWeather = (Spinner) findViewById(R.id.id_spinner_weather);
         mSpinnerHealth = (Spinner) findViewById(R.id.id_spinner_health);
@@ -155,6 +156,8 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
 //                Date date = new Date(currenttime);
 //                String currentTimeStr = dateFormat.format(date);
 //                mUserDataBean.setCurrentTime(currentTimeStr);
+
+
 
                 mUserName = et_mUserName.getText().toString().trim();
                 if (mUserName.equals("")) {
@@ -216,19 +219,19 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                         }
                     }
                 });
-                if (et_mFatigue.getText().toString().equals("")) {
-                    Toast.makeText(SaveDataActivity.this, "请输入您的疲劳值", Toast.LENGTH_SHORT).show();
-                    break;
-
-                } else {
-                    mPressure = Integer.parseInt(et_mFatigue.getText().toString());
-                    if (mPressure >= 0 && mPressure <= 100) {
+//                if (et_mFatigue.getText().toString().equals("")) {
+//                    Toast.makeText(SaveDataActivity.this, "请输入您的疲劳值", Toast.LENGTH_SHORT).show();
+//                    break;
+//
+//                } else {
+//                    mPressure = Integer.parseInt(et_mFatigue.getText().toString());
+//                    if (mPressure >= 0 && mPressure <= 100) {
 //                        mUserDataBean.setFatigue(fatigue);
-                    } else {
-                        Toast.makeText(SaveDataActivity.this, "请输入您的正确的疲劳值，范围0-100", Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-                }
+//                    } else {
+//                        Toast.makeText(SaveDataActivity.this, "请输入您的正确的疲劳值，范围0-100", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    }
+//                }
 
 
 //                Gson gson = new Gson();
@@ -263,19 +266,24 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                 Gson gson = new Gson();
                 ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
                 saveUserInformationToSP();
-                if (responseBean.getCode() == 0) {
+                if (responseBean!=null&&responseBean.getCode() == 0) {
 
-                    Toast.makeText(getApplication(), "上传成功", Toast.LENGTH_LONG).show();
+                    System.out.println("上传成功");
+                    Toast.makeText(SaveDataActivity.this, "上传成功", Toast.LENGTH_LONG).show();
                     finish();
-                } else {
-                    Toast.makeText(getApplication(), responseBean.getMsg(), Toast.LENGTH_LONG).show();
 
+                } else if(responseBean!=null){
+                    Toast.makeText(SaveDataActivity.this, responseBean.getMsg(), Toast.LENGTH_LONG).show();
+
+                }else
+                {
+                    Toast.makeText(SaveDataActivity.this, "上传失败", Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(getApplication(), "连接服务器失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(SaveDataActivity.this, "连接服务器失败", Toast.LENGTH_LONG).show();
             }
         }) {
             @Override
@@ -287,9 +295,11 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                 map.put("time", TimeUtil.getCurrentTime());
                 map.put("date", TimeUtil.getCurrentDate());
                 map.put("age", String.valueOf(mAge));
-                map.put("pressure", String.valueOf(mPressure));
+                map.put("pressure", mSpinnerPressure.getSelectedItem().toString());
                 map.put("height", String.valueOf(mHeight));
                 map.put("weight", String.valueOf(mWeight));
+
+
                 map.put("weather", mSpinnerWeather.getSelectedItem().toString());
                 map.put("health", mSpinnerHealth.getSelectedItem().toString());
                 map.put("sport", mSpinnerSport.getSelectedItem().toString());

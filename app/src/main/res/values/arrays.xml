@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="pressure_array">
+        <item>活力十足</item>
+        <item>充满活力</item>
+        <item>活力尚可</item>
+        <item>有点疲惫</item>
+        <item>特别疲劳</item>
+    </string-array>
+
     <string-array name="diet_array">
         <item>清淡</item>
         <item>均衡</item>

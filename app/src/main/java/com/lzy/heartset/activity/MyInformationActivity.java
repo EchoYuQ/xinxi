@@ -313,8 +313,12 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mBirthday = date;
-                        mTvBirthday.setText(date);
+                        String[] dates=date.split("-");
+                        if(Integer.parseInt(dates[1])<10) dates[1]="0"+dates[1];
+                        if(Integer.parseInt(dates[2])<10) dates[2]="0"+dates[2];
+                        String new_date=dates[0]+"-"+dates[1]+"-"+dates[2];
+                        mBirthday = new_date;
+                        mTvBirthday.setText(new_date);
                     }
                 });
                 dialog.dismiss();

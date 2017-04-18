@@ -196,7 +196,7 @@ public class MeasureActivity extends Activity {
 
         m_ProgressWheel = (ProgressWheel) findViewById(R.id.pw_heartrate);
         // 用户使用
-        //        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
+//                m_ProgressWheel.setMax(2 * AXISXMAX - 10);
         // 收集数据使用
         m_ProgressWheel.setMax(4 * AXISXMAX - 10);
     }
@@ -353,7 +353,6 @@ public class MeasureActivity extends Activity {
      * @param color
      * @param style
      * @param fill
-     *
      * @return
      */
     protected XYMultipleSeriesRenderer buildRenderer(int color, PointStyle style, boolean fill) {
@@ -403,7 +402,7 @@ public class MeasureActivity extends Activity {
         renderer.setClickEnabled(false);
         renderer.setShowAxes(false);
         renderer.setShowLabels(false);
-        renderer.setMargins(new int[] {0, 0, 0, 0});
+        renderer.setMargins(new int[]{0, 0, 0, 0});
         //        renderer.setPanEnabled(false, false);
         //        renderer.setZoomEnabled(false, false);
         Log.i("clickable", renderer.isClickEnabled() + "");
@@ -427,7 +426,7 @@ public class MeasureActivity extends Activity {
 
         // 数据有效则添加，无效则清空数据集
         // 另外R通道平均值在5.4以上
-        if (brightvalue < AXISYMAX && brightvalue > AXISYMIN && redvalue > 5.4) {
+        if (brightvalue < AXISYMAX && brightvalue > AXISYMIN && redvalue > 5.0) {
             count++;
             addX = AXISXMAX;
             addY = brightvalue;
@@ -471,8 +470,8 @@ public class MeasureActivity extends Activity {
                 // 如果有效数据采集到300个，就跳转到保存数据的界面
                 // 收集数据用
                 if (count == 4 * AXISXMAX) {
-                    // 用户使用
-                    //                if (count == 2 * AXISXMAX) {
+//                     用户使用
+//                                    if (count == 2 * AXISXMAX) {
 
                     UserDataBean userDataBean = new UserDataBean();
                     userDataBean.setDatas(mDatas);
@@ -556,13 +555,9 @@ public class MeasureActivity extends Activity {
                     mMeasureData.setData(float_list);
 
                     // 1. 用于用户使用
-                    //                    postToServer(MeasureActivity.this);
+//                    postToServer(MeasureActivity.this);
 
-                    //                    Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
-                    //                    Bundle bundle = new Bundle();
-                    //                    bundle.putSerializable("userdatabean", userDataBean);
-                    //                    intent.putExtras(bundle);
-                    //                    startActivity(intent);
+
 
                     // 2. 用于收集数据使用
                     Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
@@ -676,8 +671,7 @@ public class MeasureActivity extends Activity {
     public void onPause() {
         super.onPause();
         wakeLock.release();
-        if (camera!=null)
-        {
+        if (camera != null) {
             camera.setPreviewCallback(null);
             camera.stopPreview();
             camera.release();
@@ -760,7 +754,6 @@ public class MeasureActivity extends Activity {
      * 获取相机最小的预览尺寸
      *
      * @param parameters
-     *
      * @return
      */
     private static Camera.Size getSmallestPreviewSize(Camera.Parameters parameters) {
@@ -807,6 +800,7 @@ public class MeasureActivity extends Activity {
                             String jsonString = responseBean.getBody();
                             int pressure = 0;
                             String ad = "";
+                            String alert = "";
 
                             try {
                                 JSONObject jsonObject = new JSONObject(jsonString);
@@ -815,6 +809,9 @@ public class MeasureActivity extends Activity {
                                 }
                                 if (jsonObject.has("advice")) {
                                     ad = jsonObject.getString("advice");
+                                }
+                                if (jsonObject.has("alert")) {
+                                    alert = jsonObject.getString("alert");
                                 }
 
                             } catch (JSONException e) {
@@ -825,6 +822,7 @@ public class MeasureActivity extends Activity {
                             Bundle bundle = new Bundle();
                             bundle.putInt("pressure", pressure);
                             bundle.putString("ad", ad);
+                            bundle.putString("alert", alert);
                             bundle.putInt("heart_rate", mHeartRate);
                             intent.putExtras(bundle);
                             startActivity(intent);
@@ -859,7 +857,6 @@ public class MeasureActivity extends Activity {
         // 将请求添加到请求队列
         requestQueue.add(stringRequest);
     }
-
 
 
 }
