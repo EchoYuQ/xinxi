@@ -143,7 +143,7 @@ public class RegisterActivity extends Activity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("请求成功", "response -> " + response);
-                        Toast.makeText(RegisterActivity.this, response, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(RegisterActivity.this, response, Toast.LENGTH_LONG).show();
 
                         Gson gson = new Gson();
 
